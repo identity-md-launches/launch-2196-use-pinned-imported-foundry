@@ -9,7 +9,7 @@ const tests=Object.values(solidity).flatMap(s=>Object.entries(s.test_results).ma
 assert.ok(tests.length>=22 && tests.every(t=>t.status==='Success'));
 const tap=await readFile(new URL('reports/worker-tests.tap',root),'utf8');
 const testCount=Number(tap.match(/# tests (\d+)/)?.[1]);assert.ok(testCount>=36 && /# fail 0\b/.test(tap));
-const e2e=await json('reports/local-e2e.json');assert.equal(e2e.status,'passed');assert.equal(e2e.delayedInclusionSeconds,301);
+const e2e=await json('reports/local-e2e.json');assert.equal(e2e.status,'passed');assert.equal(e2e.delayedInclusionSeconds,301);assert.equal(e2e.dayCapDeferredWithoutTransaction,true);
 const factory=await json('reports/factory-fork-review.json'),router=await json('reports/production-router-review.json');
 for(const review of [factory,router]) {assert.equal(review.status,'passed');assert.equal(review.cases.length,2);assert.equal(review.publicTransactions,0);}
 assert.ok(router.cases.every(c=>c.tradingReview.quotes.length===4 && c.tradingReview.quotes.every(q=>q.quoteMatchesExecution)));
@@ -20,7 +20,7 @@ assert.ok(router.cases.every(c=>c.hookRuntimeKeccak256===artifacts.hook.runtimeK
 const report={createdAt:new Date().toISOString(),status:'local_validation_passed_live_disabled',contractTests:tests.length,randomizedCases:tests.reduce((n,t)=>n+t.fuzzRuns,0),workerAndArtifactTests:testCount,
   fuzzSeed:'0x25b0e155b7d99a4afe16ce19daf869cbff1cc18990f23669c40b4f5e6ad46323',
   checks:{build:'forge build --offline',solidity:'forge test --offline',worker:'node --test test/*.test.mjs',accountingAndRecovery:'scripts/simulate.mjs',factory:'scripts/review-factory.mjs',productionRouter:'scripts/review-factory.mjs --production-router',protocol:'scripts/check-protocol.mjs',freeOracleChecks:'scripts/check-oracle.mjs',artifacts:'scripts/launch-artifacts.mjs'},
-  review:{independent:false,importedFindingsFixed:4,retainedLifecycleRisk:'immutable Intake/action can strand request funding',newHighOrCriticalFindingsReproduced:0},
+  review:{independent:false,importedFindingsFixed:4,revisionFindingsFixed:2,retainedLifecycleRisk:'immutable Intake/action can strand request funding',newHighOrCriticalFindingsReproduced:0},
   publicChainTransactions:0,paidLiveRequests:0,realFundsSpent:'0',activation:{enabled:false,coinLaunched:false,gameConnected:false,remaining:['IMD source attestation/admission and final deployment','owner-configured worker and gas/spending/operating-reserve limits','separate IMD reserve funding and native ETH gas funding','project-hosted durable coordinator and verified game-result integration','final live pool/router checks and a paid live validation']},
   limits:['Agent implementation review, not independent audit or protocol source rebuild. Slither/Mythril were not run.','Fork exercises deployed runtime. Actual browser wallet flow and paid oracle admission/delivery were not tested.','Two confirmations and latest canonical checkpoint checks are not a guarantee of L1 finality.','The oracle wording check is a free screen, not a paid admission guarantee.'],tests};
 await writeFile(new URL('reports/validation.json',root),JSON.stringify(report,null,2)+'\n');

@@ -2,225 +2,249 @@ TAP version 13
 # Subtest: launch manifest matches callable constructors and preserves the explicit supply allocation
 ok 1 - launch manifest matches callable constructors and preserves the explicit supply allocation
   ---
-  duration_ms: 8.801652
+  duration_ms: 6.00386
   type: 'test'
   ...
 # Subtest: shipped deployment bytes reproduce the mined hook and both fork runtime hashes
 ok 2 - shipped deployment bytes reproduce the mined hook and both fork runtime hashes
   ---
-  duration_ms: 39.177806
+  duration_ms: 33.788333
   type: 'test'
   ...
 # Subtest: free check sends the exact supported wording fields and preserves paid body fields
 ok 3 - free check sends the exact supported wording fields and preserves paid body fields
   ---
-  duration_ms: 5.570481
+  duration_ms: 2.760575
   type: 'test'
   ...
 # Subtest: wording blockers, incomplete checks, altered questions and HTTP errors fail closed
 ok 4 - wording blockers, incomplete checks, altered questions and HTTP errors fail closed
   ---
-  duration_ms: 6.561451
+  duration_ms: 3.284338
   type: 'test'
   ...
 # Subtest: capability and check limit changes require operational review
 ok 5 - capability and check limit changes require operational review
   ---
-  duration_ms: 3.324612
+  duration_ms: 1.584215
   type: 'test'
   ...
 # Subtest: saved jobs cannot add screening waivers, callbacks or unreviewed payment fields
 ok 6 - saved jobs cannot add screening waivers, callbacks or unreviewed payment fields
   ---
-  duration_ms: 1.222328
+  duration_ms: 0.656069
   type: 'test'
   ...
 # Subtest: default mode never touches an adapter or spends
 ok 7 - default mode never touches an adapter or spends
   ---
-  duration_ms: 5.105375
+  duration_ms: 2.908815
   type: 'test'
   ...
 # Subtest: live execution and wrong simulation adapters fail closed
 ok 8 - live execution and wrong simulation adapters fail closed
   ---
-  duration_ms: 1.124682
+  duration_ms: 0.782737
   type: 'test'
   ...
 # Subtest: 8 decisions reserve once, pay once each and release unused funds
 ok 9 - 8 decisions reserve once, pay once each and release unused funds
   ---
-  duration_ms: 121.262543
+  duration_ms: 309.671681
   type: 'test'
   ...
 # Subtest: duplicate identity is idempotent but changed input is rejected
 ok 10 - duplicate identity is idempotent but changed input is rejected
   ---
-  duration_ms: 12.890116
+  duration_ms: 43.995119
   type: 'test'
   ...
 # Subtest: atomic reservations reject oversubscription across worker instances
 ok 11 - atomic reservations reject oversubscription across worker instances
   ---
-  duration_ms: 11.990941
+  duration_ms: 40.809068
   type: 'test'
   ...
 # Subtest: lost broadcast reply and process restart reconcile without paying again
 ok 12 - lost broadcast reply and process restart reconcile without paying again
   ---
-  duration_ms: 22.920465
+  duration_ms: 74.147227
   type: 'test'
   ...
 # Subtest: unseen transaction rebroadcasts identical signed bytes and nonce
 ok 13 - unseen transaction rebroadcasts identical signed bytes and nonce
   ---
-  duration_ms: 19.503845
+  duration_ms: 67.646893
   type: 'test'
   ...
 # Subtest: pending confirmation prevents new payment or automatic replacement
 ok 14 - pending confirmation prevents new payment or automatic replacement
   ---
-  duration_ms: 19.864926
+  duration_ms: 69.033124
   type: 'test'
   ...
 # Subtest: crash during signing can retry preparation; no send occurred
 ok 15 - crash during signing can retry preparation; no send occurred
   ---
-  duration_ms: 33.488798
+  duration_ms: 67.504386
   type: 'test'
   ...
 # Subtest: reorg and mismatched result block further spending and keep reservations
 ok 16 - reorg and mismatched result block further spending and keep reservations
   ---
-  duration_ms: 39.689261
+  duration_ms: 79.324976
   type: 'test'
   ...
 # Subtest: confirmed wrong body is never treated as the expected decision payment
 ok 17 - confirmed wrong body is never treated as the expected decision payment
   ---
-  duration_ms: 26.894508
+  duration_ms: 68.101629
   type: 'test'
   ...
 # Subtest: confirmed revert is recorded without automatic new paid attempt
 ok 18 - confirmed revert is recorded without automatic new paid attempt
   ---
-  duration_ms: 24.480798
+  duration_ms: 79.714307
   type: 'test'
   ...
 # Subtest: gas exhaustion, IMD exhaustion, price change and provider outage send nothing
 ok 19 - gas exhaustion, IMD exhaustion, price change and provider outage send nothing
   ---
-  duration_ms: 39.725014
+  duration_ms: 74.092861
   type: 'test'
   ...
 # Subtest: automatic maintenance prepares only fixed contract functions and is durable
 ok 20 - automatic maintenance prepares only fixed contract functions and is durable
   ---
-  duration_ms: 65.282702
+  duration_ms: 88.84491
   type: 'test'
   ...
 # Subtest: lease fences concurrent workers and expires safely
 ok 21 - lease fences concurrent workers and expires safely
   ---
-  duration_ms: 54.135773
+  duration_ms: 65.949511
   type: 'test'
   ...
 # Subtest: 16 simultaneous BO5 budgets account for 128 maximum decisions
 ok 22 - 16 simultaneous BO5 budgets account for 128 maximum decisions
   ---
-  duration_ms: 68.634774
+  duration_ms: 89.9051
   type: 'test'
   ...
 # Subtest: a deep reorg after confirmation halts the persistent worker before more spending
 ok 23 - a deep reorg after confirmation halts the persistent worker before more spending
   ---
-  duration_ms: 64.993138
+  duration_ms: 89.461616
   type: 'test'
   ...
 # Subtest: loopback adapter rejects public RPCs even with simulation mode
 ok 24 - loopback adapter rejects public RPCs even with simulation mode
   ---
-  duration_ms: 0.798444
+  duration_ms: 0.557297
   type: 'test'
   ...
 # Subtest: server admission reserves eight decisions plus a configured buffer
 ok 25 - server admission reserves eight decisions plus a configured buffer
   ---
-  duration_ms: 28.305277
+  duration_ms: 68.146328
+  type: 'test'
+  ...
+# Subtest: admission counts open reservations and the day's confirmed spend against the UTC-day cap
+ok 26 - admission counts open reservations and the day's confirmed spend against the UTC-day cap
+  ---
+  duration_ms: 342.030927
+  type: 'test'
+  ...
+# Subtest: day cap arithmetic follows the contract and tolerates a clock slightly ahead of the chain
+ok 27 - day cap arithmetic follows the contract and tolerates a clock slightly ahead of the chain
+  ---
+  duration_ms: 0.694463
+  type: 'test'
+  ...
+# Subtest: a day-capped request waits dated without signing, maintenance still runs, next day resumes
+ok 28 - a day-capped request waits dated without signing, maintenance still runs, next day resumes
+  ---
+  duration_ms: 133.810853
+  type: 'test'
+  ...
+# Subtest: a failed decision cannot be silently re-queued under the same key
+ok 29 - a failed decision cannot be silently re-queued under the same key
+  ---
+  duration_ms: 91.898262
   type: 'test'
   ...
 # Subtest: server queue freezes explicit public fields and refuses invalid oracle outputs
-ok 26 - server queue freezes explicit public fields and refuses invalid oracle outputs
+ok 30 - server queue freezes explicit public fields and refuses invalid oracle outputs
   ---
-  duration_ms: 20.236561
+  duration_ms: 42.327688
   type: 'test'
   ...
 # Subtest: background service remains inert with default disabled configuration
-ok 27 - background service remains inert with default disabled configuration
+ok 31 - background service remains inert with default disabled configuration
   ---
-  duration_ms: 0.452967
+  duration_ms: 0.511565
   type: 'test'
   ...
 # Subtest: permissionless fee settlement cannot strand unsigned maintenance ahead of requests
-ok 28 - permissionless fee settlement cannot strand unsigned maintenance ahead of requests
+ok 32 - permissionless fee settlement cannot strand unsigned maintenance ahead of requests
   ---
-  duration_ms: 36.136338
+  duration_ms: 80.220801
   type: 'test'
   ...
 # Subtest: partial permissionless settlement resizes unsigned maintenance, never signed bytes
-ok 29 - partial permissionless settlement resizes unsigned maintenance, never signed bytes
+ok 33 - partial permissionless settlement resizes unsigned maintenance, never signed bytes
   ---
-  duration_ms: 27.691149
+  duration_ms: 69.602621
   type: 'test'
   ...
 # Subtest: admission holds the coordinator lease across its asynchronous balance snapshot
-ok 30 - admission holds the coordinator lease across its asynchronous balance snapshot
+ok 34 - admission holds the coordinator lease across its asynchronous balance snapshot
   ---
-  duration_ms: 31.657019
+  duration_ms: 54.908382
   type: 'test'
   ...
 # Subtest: admission rejects a stale balance snapshot after lease expiry
-ok 31 - admission rejects a stale balance snapshot after lease expiry
+ok 35 - admission rejects a stale balance snapshot after lease expiry
   ---
-  duration_ms: 37.237713
+  duration_ms: 47.065942
   type: 'test'
   ...
 # Subtest: oversized and malformed Unicode questions cannot enter the payment journal
-ok 32 - oversized and malformed Unicode questions cannot enter the payment journal
+ok 36 - oversized and malformed Unicode questions cannot enter the payment journal
   ---
-  duration_ms: 32.748311
+  duration_ms: 42.273748
   type: 'test'
   ...
 # Subtest: wording refusals and unavailable checks enqueue nothing and retain the match reserve
-ok 33 - wording refusals and unavailable checks enqueue nothing and retain the match reserve
+ok 37 - wording refusals and unavailable checks enqueue nothing and retain the match reserve
   ---
-  duration_ms: 25.108206
+  duration_ms: 37.611877
   type: 'test'
   ...
 # Subtest: input is frozen before preflight and a later refusal blocks signing legacy jobs
-ok 34 - input is frozen before preflight and a later refusal blocks signing legacy jobs
+ok 38 - input is frozen before preflight and a later refusal blocks signing legacy jobs
   ---
-  duration_ms: 45.027643
+  duration_ms: 52.500733
   type: 'test'
   ...
 # Subtest: preflight outage and lost coordinator lease never sign or broadcast
-ok 35 - preflight outage and lost coordinator lease never sign or broadcast
+ok 39 - preflight outage and lost coordinator lease never sign or broadcast
   ---
-  duration_ms: 58.268713
+  duration_ms: 65.362179
   type: 'test'
   ...
 # Subtest: changed oracle panel terms halt persistently before payment preparation
-ok 36 - changed oracle panel terms halt persistently before payment preparation
+ok 40 - changed oracle panel terms halt persistently before payment preparation
   ---
-  duration_ms: 26.215441
+  duration_ms: 57.869927
   type: 'test'
   ...
-1..36
-# tests 36
+1..40
+# tests 40
 # suites 0
-# pass 36
+# pass 40
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1295.476363
+# duration_ms 2933.671153

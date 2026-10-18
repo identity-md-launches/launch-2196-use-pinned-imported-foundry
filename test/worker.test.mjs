@@ -9,11 +9,12 @@ import { FundingEngine } from '../worker/engine.mjs';
 import { validateLiveConfig } from '../worker/chain-adapter.mjs';
 import { DuelFundingBudget } from '../worker/budget.mjs';
 import { runFundingService } from '../worker/service.mjs';
+import { dayCapHeadroom, utcDay, nextUtcDayStart, DAY_MS, CLOCK_SKEW_MS } from '../worker/day-cap.mjs';
 
-const PRICE=500000000000000000n, CONTRACT='0x1111111111111111111111111111111111111111';
+const PRICE=500000000000000000n, CONTRACT='0x1111111111111111111111111111111111111111', DAILY=100n*PRICE;
 class LocalAdapter {
   localOnly=true; liveAuthorized=false; prices=PRICE; prepareCount=0; broadcasts=[]; results=new Map();
-  funds={requestBalance:100n*PRICE,treasuryBalance:0n,pendingFees:0n,gas:100000n};
+  funds={requestBalance:100n*PRICE,treasuryBalance:0n,pendingFees:0n,gas:100000n,dailyLimit:DAILY,spentDay:0n,spentToday:0n};
   async assertReady() {if(this.offline) throw Error('Offline');}
   async balances() {return this.funds;}
   async terms() {return {amount:this.prices};}
@@ -120,10 +121,66 @@ test('loopback adapter rejects public RPCs even with simulation mode',async()=>{
   assert.throws(()=>createLocalChainAdapter({mode:'simulate',chainId:4663,rpcUrl:'http://127.0.0.1:8545'},{}),/Local EVM/);
 });
 test('server admission reserves eight decisions plus a configured buffer',async t=>{
-  const f=fixture(t);const config={mode:'simulate',chainId:4663,contract:CONTRACT,requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:(2n*PRICE).toString()};
+  const f=fixture(t);const config={mode:'simulate',chainId:4663,contract:CONTRACT,requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:(2n*PRICE).toString(),dailyLimitAtomic:DAILY.toString()};
   const budget=new DuelFundingBudget({store:f.store,adapter:f.adapter,config});
   f.adapter.funds.requestBalance=18n*PRICE;await budget.admit('match-2');assert.equal(f.store.reserved(),16n*PRICE);
   await assert.rejects(budget.admit('match-3'),/Insufficient/);
+  await assert.rejects(new DuelFundingBudget({store:f.store,adapter:f.adapter,config:{...config,dailyLimitAtomic:undefined}}).admit('match-4'),/reserves must be configured/);
+});
+test('admission counts open reservations and the day\'s confirmed spend against the UTC-day cap',async t=>{
+  const f=fixture(t);const config={mode:'simulate',chainId:4663,contract:CONTRACT,requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:'0',dailyLimitAtomic:(16n*PRICE).toString()};
+  const budget=new DuelFundingBudget({store:f.store,adapter:f.adapter,config});
+  f.adapter.funds.dailyLimit=8n*PRICE; // the fixture's open match-1 already holds the whole day
+  await assert.rejects(budget.admit('match-2'),/On-chain spending policy mismatch/);
+  f.adapter.funds.dailyLimit=16n*PRICE;await budget.admit('match-2');assert.equal(f.store.reserved(),16n*PRICE);
+  await assert.rejects(budget.admit('match-3'),/Daily spending cap/);
+  // Paying match-1 frees its reservation but the chain now counts that spend for today.
+  for(let r=1;r<=4;r++) for(let s=0;s<2;s++) f.enqueue(r,s);
+  for(let i=0;i<8;i++) {await f.engine.runOnce();const row=f.store.next();f.adapter.confirm(row);f.adapter.funds.spentDay=BigInt(utcDay());f.adapter.funds.spentToday+=PRICE;await f.engine.runOnce();}
+  f.store.closeMatch('match-1');assert.equal(f.store.reserved(),8n*PRICE);assert.equal(f.adapter.funds.spentToday,8n*PRICE);
+  await assert.rejects(budget.admit('match-3'),/Daily spending cap/);
+  // Spend the contract recorded on an earlier UTC day no longer counts.
+  f.adapter.funds.spentDay=BigInt(utcDay())-2n;await budget.admit('match-3');assert.equal(f.store.reserved(),16n*PRICE);
+});
+test('day cap arithmetic follows the contract and tolerates a clock slightly ahead of the chain',()=>{
+  const midnight=(utcDay()+1)*DAY_MS, today=BigInt(utcDay(midnight-1));
+  const balances={dailyLimit:4n*PRICE,spentDay:today,spentToday:3n*PRICE};
+  assert.equal(dayCapHeadroom(balances,midnight-1),PRICE);
+  assert.equal(dayCapHeadroom(balances,midnight+CLOCK_SKEW_MS-1),PRICE); // still yesterday's cap for the worker
+  assert.equal(dayCapHeadroom(balances,midnight+CLOCK_SKEW_MS+1),4n*PRICE);
+  assert.equal(dayCapHeadroom({...balances,spentToday:5n*PRICE},midnight-1),0n);
+  assert.equal(dayCapHeadroom({...balances,spentDay:today+1n},midnight-1),PRICE); // chain already ahead: count it
+  assert.throws(()=>dayCapHeadroom({dailyLimit:1n}),/unavailable/);
+  assert.equal(nextUtcDayStart(midnight-1),new Date(midnight).toISOString());
+});
+test('a day-capped request waits dated without signing, maintenance still runs, next day resumes',async t=>{
+  const f=fixture(t);f.enqueue();f.enqueue(1,1);
+  f.adapter.funds.dailyLimit=8n*PRICE;f.adapter.funds.spentDay=BigInt(utcDay());f.adapter.funds.spentToday=8n*PRICE;
+  const first=await f.engine.runOnce();assert.equal(first.state,'day_cap');assert.equal(first.resumesAt,nextUtcDayStart());
+  for(let i=0;i<3;i++) assert.equal((await f.engine.runOnce()).state,'day_cap');
+  assert.equal(f.adapter.prepareCount,0);assert.equal(f.adapter.broadcasts.length,0);assert.equal(f.store.blocked(),false);
+  assert.equal(f.store.get(first.id).state,'queued');assert.equal(f.store.get(first.id).raw,null);
+  assert.equal(f.store.db.prepare("SELECT count(*) AS c FROM events WHERE kind='day_cap'").get().c,1);
+  f.adapter.funds.pendingFees=40n*10n**18n;assert.equal((await f.engine.runOnce()).state,'submitted');
+  const harvest=f.store.next();assert.equal(harvest.kind,'harvest');f.adapter.confirm(harvest);assert.equal((await f.engine.runOnce()).state,'confirmed');
+  f.adapter.funds.pendingFees=0n;assert.equal((await f.engine.runOnce()).state,'day_cap');
+  f.adapter.funds.spentDay=BigInt(utcDay())-2n; // the contract will reset spentToday on the next payment
+  assert.equal((await f.engine.runOnce()).state,'submitted');assert.equal(f.store.get(first.id).state,'submitted');
+  assert.throws(()=>f.store.closeMatch('match-1'),/reconciled/);
+});
+test('a failed decision cannot be silently re-queued under the same key',async t=>{
+  const f=fixture(t);const config={mode:'simulate',chainId:4663,contract:CONTRACT,requestPriceAtomic:PRICE.toString()};
+  const budget=new DuelFundingBudget({store:f.store,adapter:f.adapter,config});
+  const input={v:1,chainId:4663,question:'What is the remainder when the decimal integer 7 is divided by 4?',answerType:'uint256',evidence:'panel',panelSize:5,quorum:4,toleranceBps:0,guards:{min:'0',max:'3'}};
+  const row=await budget.queueDecision({matchId:'match-1',round:1,seat:0,input});
+  await f.engine.runOnce();f.adapter.results.set(f.store.next().hash,{state:'reverted'});
+  assert.equal((await f.engine.runOnce()).state,'failed');
+  // Identical input is no longer answered with the dead row; the caller learns the decision is unfunded.
+  await assert.rejects(budget.queueDecision({matchId:'match-1',round:1,seat:0,input}),/Decision payment failed/);
+  assert.throws(()=>f.store.enqueue({id:row.id,match:'match-1',amount:PRICE,body:JSON.parse(row.payload).body}),/Decision payment failed/);
+  assert.equal(f.store.get(row.id).state,'failed');assert.equal(f.store.next(),undefined);
+  // Other decisions of the match are unaffected and nothing was paid twice.
+  assert.equal(f.enqueue(1,1).state,'queued');assert.equal((await f.engine.runOnce()).state,'submitted');assert.equal(f.adapter.broadcasts.length,2);
 });
 test('server queue freezes explicit public fields and refuses invalid oracle outputs',async t=>{
   const f=fixture(t);const config={mode:'simulate',chainId:4663,contract:CONTRACT,requestPriceAtomic:PRICE.toString()};
@@ -153,14 +210,14 @@ test('partial permissionless settlement resizes unsigned maintenance, never sign
 });
 test('admission holds the coordinator lease across its asynchronous balance snapshot',async t=>{
   const f=fixture(t);const other=f.reopen();
-  const config={mode:'simulate',requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:'0'};
+  const config={mode:'simulate',requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:'0',dailyLimitAtomic:DAILY.toString()};
   const budget=new DuelFundingBudget({store:f.store,adapter:f.adapter,config});
   const competing=new FundingEngine({store:other,adapter:f.adapter,mode:'simulate'});
   f.adapter.balances=async()=>{assert.equal((await competing.runOnce()).state,'busy');return f.adapter.funds;};
   await budget.admit('match-2');assert.equal(f.store.reserved(),16n*PRICE);assert.equal(other.acquire(),true);other.release();
 });
 test('admission rejects a stale balance snapshot after lease expiry',async t=>{
-  const f=fixture(t);const config={mode:'simulate',requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:'0'};
+  const f=fixture(t);const config={mode:'simulate',requestPriceAtomic:PRICE.toString(),minimumGasBalanceWei:'1',minimumImdReserveAtomic:'0',dailyLimitAtomic:DAILY.toString()};
   const budget=new DuelFundingBudget({store:f.store,adapter:f.adapter,config});
   f.adapter.balances=async()=>{f.store.db.prepare('UPDATE leases SET until_ms=0').run();return f.adapter.funds;};
   await assert.rejects(budget.admit('match-2'),/lease lost/);assert.equal(f.store.reserved(),8n*PRICE);

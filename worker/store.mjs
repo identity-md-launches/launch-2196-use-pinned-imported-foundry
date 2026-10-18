@@ -21,11 +21,14 @@ export class FundingStore {
   tx(fn) { this.db.exec('BEGIN IMMEDIATE'); try { const value=fn(); this.db.exec('COMMIT'); return value; } catch(error) { this.db.exec('ROLLBACK'); throw error; } }
   event(kind,detail) { this.db.prepare('INSERT INTO events(at,kind,detail) VALUES(?,?,?)').run(Date.now(),kind,JSON.stringify(detail)); }
   reserved() { return this.db.prepare('SELECT remaining FROM matches WHERE closed=0').all().reduce((sum,row)=>sum+BigInt(row.remaining),0n); }
-  reserveMatch(id, budget, observedBalance, minimumReserve=0n) {
+  reserveMatch(id, budget, observedBalance, minimumReserve=0n, dayCapHeadroom=null) {
     const value=units(budget); if(value===0n || !/^[a-zA-Z0-9_-]{1,96}$/.test(id)) throw Error('Invalid match reservation');
     return this.tx(()=>{
       if(this.db.prepare('SELECT 1 FROM matches WHERE id=?').get(id)) throw Error('Match already reserved');
       if(this.reserved()+value+units(minimumReserve)>units(observedBalance)) throw Error('Insufficient unreserved funding');
+      // Every open reservation may still be paid today, so all of them count against the contract's
+      // remaining UTC-day headroom: a reservation the day cap cannot honor is refused, not promised.
+      if(dayCapHeadroom!=null && this.reserved()+value>units(dayCapHeadroom)) throw Error('Daily spending cap reached; admission deferred to the next UTC day');
       this.db.prepare('INSERT INTO matches(id,remaining) VALUES(?,?)').run(id,value.toString());
       this.event('match_reserved',{id,amount:value.toString()});
     });
@@ -35,7 +38,13 @@ export class FundingStore {
     const price=units(amount); if(price===0n) throw Error('Zero request price');
     return this.tx(()=>{
       const old=this.get(id);
-      if(old) { if(old.match_id!==match || old.amount!==price.toString() || old.payload!==JSON.stringify({body})) throw Error('Decision key reused with different input'); return old; }
+      if(old) {
+        if(old.match_id!==match || old.amount!==price.toString() || old.payload!==JSON.stringify({body})) throw Error('Decision key reused with different input');
+        // A reverted payment wrote nothing on chain, but the design has no automatic paid retry:
+        // the caller must learn the decision is unfunded instead of receiving the dead row as queued.
+        if(old.state==='failed') throw Error('Decision payment failed; operator review required before any re-queue');
+        return old;
+      }
       const reservation=this.db.prepare('SELECT * FROM matches WHERE id=? AND closed=0').get(match);
       if(!reservation) throw Error('Match has no reservation');
       const allocated=this.db.prepare("SELECT amount FROM jobs WHERE match_id=? AND state NOT IN ('paid','failed')").all(match).reduce((sum,row)=>sum+BigInt(row.amount),0n);
@@ -59,6 +68,13 @@ export class FundingStore {
   next() { return this.db.prepare("SELECT * FROM jobs WHERE state NOT IN ('paid','failed','blocked') ORDER BY CASE state WHEN 'submitted' THEN 0 WHEN 'prepared' THEN 1 WHEN 'preparing' THEN 2 ELSE 3 END, created, rowid LIMIT 1").get(); }
   blocked() { return Boolean(this.db.prepare("SELECT 1 FROM jobs WHERE state='blocked' LIMIT 1").get() || this.db.prepare("SELECT 1 FROM control WHERE key='halt'").get()); }
   halt(reason) { this.db.prepare("INSERT OR REPLACE INTO control VALUES('halt',?)").run(reason); this.event('halt',{reason}); }
+  /** Records the UTC day on which the contract's daily cap deferred requests; true the first time that day. */
+  noteDayCap(day,detail) {
+    return this.tx(()=>{
+      const row=this.db.prepare("SELECT value FROM control WHERE key='day_cap'").get(); if(row && Number(row.value)===day) return false;
+      this.db.prepare("INSERT OR REPLACE INTO control VALUES('day_cap',?)").run(String(day)); this.event('day_cap',{day,...detail}); return true;
+    });
+  }
   checkpoint() { const row=this.db.prepare("SELECT value FROM control WHERE key='checkpoint'").get(); return row?JSON.parse(row.value):null; }
   maintenanceDue(now=Date.now()) { const row=this.db.prepare("SELECT max(created) AS last FROM jobs WHERE kind!='request'").get(); return !row.last || now-row.last>=60000; }
   patch(id,values) {

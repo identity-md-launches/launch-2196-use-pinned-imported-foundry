@@ -6,6 +6,7 @@ export const ABI = parseAbi([
   'function imd() view returns(address)', 'function intake() view returns(address)', 'function treasury() view returns(address)',
   'function worker() view returns(address)', 'function paymentsEnabled() view returns(bool)',
   'function maxRequestAmount() view returns(uint256)', 'function dailyLimit() view returns(uint256)',
+  'function spentDay() view returns(uint256)', 'function spentToday() view returns(uint256)',
   'function requestBalance() view returns(uint256)', 'function treasuryBalance() view returns(uint256)', 'function pendingFees() view returns(uint256)',
   'function harvest(uint256 amount)', 'function payTreasury(uint256 amount)',
   'function payRequest(bytes32 key,bytes body,uint256 amount,uint256 deadline) returns(bytes32)',
@@ -51,8 +52,11 @@ function buildAdapter(config,walletClient,local) {
       if(perRequest!==BigInt(config.requestPriceAtomic)||perDay!==BigInt(config.dailyLimitAtomic)) throw Error('On-chain spending policy mismatch');
     },
     async balances() {
-      const [requestBalance,treasuryBalance,pendingFees,gas]=await Promise.all([read('requestBalance'),read('treasuryBalance'),read('pendingFees'),client.getBalance({address:config.worker})]);
-      return {requestBalance,treasuryBalance,pendingFees,gas};
+      // The UTC-day cap state is read with the balances so admission and the engine see one snapshot.
+      const [requestBalance,treasuryBalance,pendingFees,dailyLimit,spentDay,spentToday,gas]=await Promise.all([
+        ...['requestBalance','treasuryBalance','pendingFees','dailyLimit','spentDay','spentToday'].map(read),client.getBalance({address:config.worker}),
+      ]);
+      return {requestBalance,treasuryBalance,pendingFees,dailyLimit,spentDay,spentToday,gas};
     },
     async terms() {
       const action=local?{amount:config.requestPriceAtomic}:await oracle.terms();

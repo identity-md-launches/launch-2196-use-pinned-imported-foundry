@@ -1,4 +1,5 @@
 import { OracleTermsChanged } from './oracle-client.mjs';
+import { dayCapHeadroom, nextUtcDayStart, utcDay } from './day-cap.mjs';
 import { keccak256, toHex } from '../vendor/viem.mjs';
 
 // The adapter is injected. No wallet, credentials, endpoint or broadcaster is created here.
@@ -41,7 +42,10 @@ export class FundingEngine {
       const balances=await this.adapter.balances();
       this.store.assertLease();
       if(BigInt(balances.gas)<this.minGasWei) return {state:'low_gas'};
-      if(!row?.raw && (!row || row.kind==='request' && (this.store.maintenanceDue() || BigInt(balances.requestBalance)<BigInt(row.amount)))) {
+      // A request the contract's UTC-day cap would reject is deferred without signing or simulating
+      // anything; maintenance is never capped and still runs behind it.
+      const capped=Boolean(row && !row.raw && row.kind==='request' && dayCapHeadroom(balances)<BigInt(row.amount));
+      if(!row?.raw && (!row || row.kind==='request' && (capped || this.store.maintenanceDue() || BigInt(balances.requestBalance)<BigInt(row.amount)))) {
         // Bounded maintenance does not starve requests during continuous trading. Finish a treasury
         // payout before the next harvest, even when swaps continue to accrue new fee claims.
         if(BigInt(balances.treasuryBalance)>=this.maintenanceMin) row=this.store.enqueueMaintenance('treasury',balances.treasuryBalance);
@@ -64,6 +68,11 @@ export class FundingEngine {
           this.store.assertLease();
           if(BigInt(terms.amount)!==BigInt(row.amount)) {this.store.halt('Oracle price changed; operational review required');return {state:'price_changed',id:row.id};}
           if(BigInt(balances.requestBalance)<BigInt(row.amount)) return {state:'low_imd',id:row.id};
+          if(capped) {
+            const resumesAt=nextUtcDayStart();
+            this.store.noteDayCap(utcDay(),{id:row.id,resumesAt,dailyLimit:String(balances.dailyLimit),spentToday:String(balances.spentToday)});
+            return {state:'day_cap',id:row.id,resumesAt};
+          }
           const checked=await this.adapter.preflight(JSON.parse(row.payload).body);
           this.store.assertLease();
           if(checked?.approved!==true) {this.store.patch(row.id,{state:'blocked',error:'Oracle wording check refused; no payment signed'});return {state:'blocked',id:row.id};}

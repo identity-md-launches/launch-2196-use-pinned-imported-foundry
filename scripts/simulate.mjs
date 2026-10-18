@@ -9,6 +9,7 @@ import { privateKeyToAccount } from '../vendor/viem.mjs';
 import { FundingStore,decisionKey } from '../worker/store.mjs';
 import { FundingEngine } from '../worker/engine.mjs';
 import { createLocalChainAdapter, REQUEST_DEADLINE_SECONDS, ABI } from '../worker/chain-adapter.mjs';
+import { dayCapHeadroom } from '../worker/day-cap.mjs';
 
 const dir=await mkdtemp(join(tmpdir(),'funding-evm-'));
 const port=18549;
@@ -87,6 +88,23 @@ try {
   for(let i=1;i<8;i++) {assert.equal((await cycle()).state,'submitted');assert.equal((await cycle()).state,'confirmed');}
   assert.equal(await read(intake,'count'),8n);assert.equal(await read(hook,'requestBalance'),24n*10n**18n);
   assert.equal(await read(imd,'balanceOf',[intake.address]),4n*10n**18n);store.closeMatch('fixture-duel');
-  const report={status:'passed',environment:'Disposable local Anvil chain 31337',realUniswapPoolManager:true,buyInputImd:'1000',customTaxImd:'40',requestAllocationImd:'28',treasuryPaidImd:'12',requestsPaid:8,requestSpendImd:'4',requestFundRemainingImd:'24',delayedInclusionSeconds:301,requestDeadlineSeconds:REQUEST_DEADLINE_SECONDS,lostBroadcastReplyRecoveredAfterRestart:true,duplicateRequestsPaid:0,liveChainTransactions:0,realFundsSpent:'0',notes:['All tokens, gas and wallets in this run are local fixtures.','This tests actual compiled contracts and the same transaction adapter used by the worker.','IMD intake is a mock in this test; no real swarm call or coin launch occurred.']};
+  // The worker's UTC-day arithmetic must match the compiled contract: 4 IMD of 10 IMD spent today.
+  const chainNow=Number((await publicClient.getBlock()).timestamp)*1000;
+  let snapshot=await adapter.balances();
+  assert.equal(snapshot.spentToday,4n*10n**18n);assert.equal(snapshot.spentDay,BigInt(Math.floor(chainNow/86400000)));
+  assert.equal(dayCapHeadroom(snapshot,chainNow),6n*10n**18n);
+  // Lower the owner cap to exactly today's spend: the engine defers with a dated day_cap and signs nothing.
+  await call(hook,'configureWorker',[account.address,5n*10n**17n,4n*10n**18n,true]);
+  const cappedAdapter=createLocalChainAdapter({...config,dailyLimitAtomic:'4000000000000000000'},wallet);
+  snapshot=await cappedAdapter.balances();assert.equal(dayCapHeadroom(snapshot,chainNow),0n);
+  store.reserveMatch('capped-duel',4n*10n**18n,await read(hook,'requestBalance'));
+  const capped=store.enqueue({id:decisionKey(31337,hook.address,'capped-duel',1,0),match:'capped-duel',amount:5n*10n**17n,body:JSON.stringify({v:1,question:'Local simulated decision',round:1,seat:0})});
+  engine=new FundingEngine({store,adapter:cappedAdapter,mode:'simulate'});
+  const nonceBefore=await publicClient.getTransactionCount({address:account.address});
+  const deferred=await cycle();assert.equal(deferred.state,'day_cap');assert.equal(deferred.id,capped.id);assert.equal(typeof deferred.resumesAt,'string');
+  assert.equal((await cycle()).state,'day_cap');assert.equal(store.get(capped.id).state,'queued');assert.equal(store.get(capped.id).raw,null);
+  assert.equal(await publicClient.getTransactionCount({address:account.address}),nonceBefore);assert.equal(await read(intake,'count'),8n);
+  assert.equal(store.blocked(),false);assert.equal(store.db.prepare("SELECT count(*) AS c FROM events WHERE kind='day_cap'").get().c,1);
+  const report={status:'passed',environment:'Disposable local Anvil chain 31337',realUniswapPoolManager:true,buyInputImd:'1000',customTaxImd:'40',requestAllocationImd:'28',treasuryPaidImd:'12',requestsPaid:8,requestSpendImd:'4',requestFundRemainingImd:'24',delayedInclusionSeconds:301,requestDeadlineSeconds:REQUEST_DEADLINE_SECONDS,lostBroadcastReplyRecoveredAfterRestart:true,duplicateRequestsPaid:0,dayCapDeferredWithoutTransaction:true,dayCapHeadroomMatchesContract:true,liveChainTransactions:0,realFundsSpent:'0',notes:['All tokens, gas and wallets in this run are local fixtures.','This tests actual compiled contracts and the same transaction adapter used by the worker.','IMD intake is a mock in this test; no real swarm call or coin launch occurred.']};
   await mkdir(new URL('../reports/',import.meta.url),{recursive:true});await writeFile(new URL('../reports/local-e2e.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
 } finally {store?.close();child.kill();await new Promise(resolve=>{if(child.exitCode!==null) resolve();else child.once('exit',resolve);});await rm(dir,{recursive:true,force:true});}

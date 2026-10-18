@@ -1,9 +1,9 @@
 {
-  "createdAt": "2026-10-18T22:21:25.730Z",
+  "createdAt": "2026-10-18T22:54:41.180Z",
   "status": "local_validation_passed_live_disabled",
   "contractTests": 22,
   "randomizedCases": 1536,
-  "workerAndArtifactTests": 36,
+  "workerAndArtifactTests": 40,
   "fuzzSeed": "0x25b0e155b7d99a4afe16ce19daf869cbff1cc18990f23669c40b4f5e6ad46323",
   "checks": {
     "build": "forge build --offline",
@@ -19,6 +19,7 @@
   "review": {
     "independent": false,
     "importedFindingsFixed": 4,
+    "revisionFindingsFixed": 2,
     "retainedLifecycleRisk": "immutable Intake/action can strand request funding",
     "newHighOrCriticalFindingsReproduced": 0
   },
