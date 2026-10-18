@@ -1,0 +1,518 @@
+{
+  "scope": "Tests and review evidence only; production source, worker, manifest, deployment artifacts, dependencies and configuration unchanged.",
+  "tools": {
+    "forge": "1.8.3",
+    "solc": "0.8.26",
+    "node": "24.21.0"
+  },
+  "build": {
+    "command": "forge build",
+    "status": "passed",
+    "note": "Existing source/test lint warnings are not disabled or treated as confirmed defects."
+  },
+  "foundry": {
+    "command": "forge test",
+    "fuzzSeed": "0x25b0e155b7d99a4afe16ce19daf869cbff1cc18990f23669c40b4f5e6ad46323",
+    "status": "passed",
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "fuzzCases": 3536,
+    "invariantCampaigns": 3,
+    "invariantPredicates": 7,
+    "invariantCalls": 49152,
+    "unexpectedInvariantReverts": 0,
+    "suites": [
+      {
+        "suite": "test/CabalFundingHook.t.sol:FundingHookTest",
+        "tests": [
+          {
+            "test": "testAllSwapModesAndOrderings()",
+            "status": "passed"
+          },
+          {
+            "test": "testCannotCallCallbacksOrBindAnotherPool()",
+            "status": "passed"
+          },
+          {
+            "test": "testEndToEndSwapTreasuryAndOraclePayment()",
+            "status": "passed"
+          },
+          {
+            "test": "testFirstBuyIntoSingleSidedPool()",
+            "status": "passed"
+          },
+          {
+            "test": "testFuzzActualSwapFeeMath(uint64,uint8)",
+            "status": "passed",
+            "fuzzRuns": 512
+          },
+          {
+            "test": "testFuzzMixedOperationsPreserveAllLedgers(uint256)",
+            "status": "passed",
+            "fuzzRuns": 512
+          },
+          {
+            "test": "testFuzzSplitAndChunkIndependence(uint96,uint8)",
+            "status": "passed",
+            "fuzzRuns": 512
+          },
+          {
+            "test": "testIntakeCannotReenterFundingAccounting()",
+            "status": "passed"
+          },
+          {
+            "test": "testIntakeUnderchargeRollsEverythingBack()",
+            "status": "passed"
+          },
+          {
+            "test": "testLongerDeadlineAllowsDelayedInclusionButStillExpires()",
+            "status": "passed"
+          },
+          {
+            "test": "testPaidRequestsDeduplicateAndEnforceCaps()",
+            "status": "passed"
+          },
+          {
+            "test": "testPartialFillRevertsWithoutKeepingTax()",
+            "status": "passed"
+          },
+          {
+            "test": "testPaymentMustEqualCurrentIntakePriceEvenWithHigherOwnerCap()",
+            "status": "passed"
+          },
+          {
+            "test": "testPlainCabalTransfersUntaxed()",
+            "status": "passed"
+          },
+          {
+            "test": "testPrefundingAndDirectDonationsAreNotTaxed()",
+            "status": "passed"
+          },
+          {
+            "test": "testRetiredActionCannotSpendReserveAndDoesNotBlockTrading()",
+            "status": "passed"
+          },
+          {
+            "test": "testTreasuryFailureAndPaymentOutageDoNotBlockSwaps()",
+            "status": "passed"
+          },
+          {
+            "test": "testUnauthorizedDisabledExpiredAndEmptyFund()",
+            "status": "passed"
+          },
+          {
+            "test": "testUnauthorizedInitializationIsRejected()",
+            "status": "passed"
+          },
+          {
+            "test": "testUninitializedHookCannotBeClaimedByAnOutsider()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/CabalFundingHookArithmetic.t.sol:CabalFundingHookArithmeticTest",
+        "tests": [
+          {
+            "test": "testAfterSwapRejectsWrongIMDDirectionAndIncompletePrechargedFills()",
+            "status": "passed"
+          },
+          {
+            "test": "testAtomicUnitsChargeOnlyIMDInAllFourSwapModes()",
+            "status": "passed"
+          },
+          {
+            "test": "testFirstBuyWorksWithZeroIMDSeedInEitherCurrencyOrdering()",
+            "status": "passed"
+          },
+          {
+            "test": "testFuzzFeeBoundsAcrossFullUint256Domain(uint256)",
+            "status": "passed",
+            "fuzzRuns": 1000
+          },
+          {
+            "test": "testFuzzGrossToNetToGrossHasAtMostOneAtomicUnitRounding(uint256)",
+            "status": "passed",
+            "fuzzRuns": 1000
+          },
+          {
+            "test": "testPinnedZeroOneDivisorAndMaximumFeeEdges()",
+            "status": "passed"
+          },
+          {
+            "test": "testPrechargedFeesRejectUnrepresentableSignedAmounts()",
+            "status": "passed"
+          },
+          {
+            "test": "testTenOneWeiHarvestsMatchSingleCumulativeAllocation()",
+            "status": "passed"
+          },
+          {
+            "test": "testUnrelatedPoolAndWalletTransfersAccrueNoCustomFee()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/CabalFundingHookFailures.t.sol:CabalFundingHookFailuresTest",
+        "tests": [
+          {
+            "test": "testApprovalAndAllowanceClearFailuresRollBackTheWholePayment()",
+            "status": "passed"
+          },
+          {
+            "test": "testBothSwapCallbacksRejectUnboundAndDifferentPools()",
+            "status": "passed"
+          },
+          {
+            "test": "testConstructorDoesNotCallExternalDependencies()",
+            "status": "passed"
+          },
+          {
+            "test": "testConstructorRejectsAnUnminedPermissionMask()",
+            "status": "passed"
+          },
+          {
+            "test": "testConstructorRejectsEveryMissingRole()",
+            "status": "passed"
+          },
+          {
+            "test": "testDeploymentHasOnlyRequiredPermissionsAndDisabledPayments()",
+            "status": "passed"
+          },
+          {
+            "test": "testEveryCallbackRejectsNonManagerIncludingOwner()",
+            "status": "passed"
+          },
+          {
+            "test": "testEveryIntakeFailureRollsBackApprovalKeyBalancesAndDailyCap()",
+            "status": "passed"
+          },
+          {
+            "test": "testFeeOnTransferDepositAndHarvestAreRejectedAtomically()",
+            "status": "passed"
+          },
+          {
+            "test": "testFreshHookRejectsBadBindingThenAcceptsFactoryExactlyOnce()",
+            "status": "passed"
+          },
+          {
+            "test": "testIntakeReentryCannotHarvestDonatePayTreasuryOrPayAgain()",
+            "status": "passed"
+          },
+          {
+            "test": "testOwnerHasNoEconomicOrSweepSwitches()",
+            "status": "passed"
+          },
+          {
+            "test": "testReconciliationEventsBindTheActualPoolRecipientBodyAndAmount()",
+            "status": "passed"
+          },
+          {
+            "test": "testRequestInputBoundsAreAtomicAndMaximumBodyIsAccepted()",
+            "status": "passed"
+          },
+          {
+            "test": "testSwapsAndHarvestRemainLiveWithUnavailableIntakeAndBlockedTreasury()",
+            "status": "passed"
+          },
+          {
+            "test": "testUTCAndDeadlineBoundariesAndReplaySurviveDayChange()",
+            "status": "passed"
+          },
+          {
+            "test": "testUnsyncedDonationCannotBeSpentUntilExplicitlyBooked()",
+            "status": "passed"
+          },
+          {
+            "test": "testWorkerConfigurationRejectsInvalidParametersAndNonOwner()",
+            "status": "passed"
+          },
+          {
+            "test": "testWorkerRotationRevokesOldWorkerAndDoesNotResetSpentBudget()",
+            "status": "passed"
+          },
+          {
+            "test": "testZeroAndExcessSettlementCannotTouchRequestPrefunding()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/CabalFundingHookInvariant.t.sol:CabalFundingImdFirstInvariantTest",
+        "tests": [
+          {
+            "test": "invariantClaimsCashAndEveryLedgerMatchIndependentFlows()",
+            "status": "passed",
+            "invariant": {
+              "runs": 256,
+              "calls": 16384,
+              "reverts": 0,
+              "metrics": {
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.sync": {
+                  "calls": 1227,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.pay": {
+                  "calls": 1258,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.donate": {
+                  "calls": 1241,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.unauthorized": {
+                  "calls": 1235,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.deposit": {
+                  "calls": 1245,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.harvest": {
+                  "calls": 1250,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.replay": {
+                  "calls": 1272,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.advanceTime": {
+                  "calls": 1270,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.failedIntakePayment": {
+                  "calls": 1232,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.roundTrip": {
+                  "calls": 1291,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.swap": {
+                  "calls": 1265,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.configure": {
+                  "calls": 1322,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.treasury": {
+                  "calls": 1276,
+                  "reverts": 0,
+                  "discards": 0
+                }
+              }
+            },
+            "predicates": [
+              "invariantClaimsCashAndEveryLedgerMatchIndependentFlows",
+              "invariantFixedTokenSupplyAndPvpViewsTrackRealHoldings",
+              "invariantPaidDecisionsAndDailySpendingNeverResetOrReplay"
+            ]
+          },
+          {
+            "test": "testHandlerExercisesSuccessAndFailureTransitions()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/CabalFundingHookInvariant.t.sol:CabalFundingImdSecondInvariantTest",
+        "tests": [
+          {
+            "test": "invariantClaimsCashAndEveryLedgerMatchIndependentFlows()",
+            "status": "passed",
+            "invariant": {
+              "runs": 256,
+              "calls": 16384,
+              "reverts": 0,
+              "metrics": {
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.roundTrip": {
+                  "calls": 1291,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.treasury": {
+                  "calls": 1276,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.pay": {
+                  "calls": 1258,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.donate": {
+                  "calls": 1241,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.advanceTime": {
+                  "calls": 1270,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.sync": {
+                  "calls": 1227,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.replay": {
+                  "calls": 1272,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.harvest": {
+                  "calls": 1250,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.swap": {
+                  "calls": 1265,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.unauthorized": {
+                  "calls": 1235,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.deposit": {
+                  "calls": 1245,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.configure": {
+                  "calls": 1322,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/CabalFundingHookInvariant.t.sol:CabalFundingHandler.failedIntakePayment": {
+                  "calls": 1232,
+                  "reverts": 0,
+                  "discards": 0
+                }
+              }
+            },
+            "predicates": [
+              "invariantClaimsCashAndEveryLedgerMatchIndependentFlows",
+              "invariantFixedTokenSupplyAndPvpViewsTrackRealHoldings",
+              "invariantPaidDecisionsAndDailySpendingNeverResetOrReplay"
+            ]
+          },
+          {
+            "test": "testHandlerExercisesSuccessAndFailureTransitions()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/LaunchToken.t.sol:LaunchTokenTest",
+        "tests": [
+          {
+            "test": "testFactoryReceivesExactSupplyAndTransfersStayPlain()",
+            "status": "passed"
+          },
+          {
+            "test": "testPvpBoundaryAndSellingBelowRequirement()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/LaunchTokenInvariant.t.sol:LaunchTokenStatefulInvariantTest",
+        "tests": [
+          {
+            "test": "invariantSupplyTransfersAllowancesAndEligibilityStayConsistent()",
+            "status": "passed",
+            "invariant": {
+              "runs": 256,
+              "calls": 16384,
+              "reverts": 0,
+              "metrics": {
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.transferFrom": {
+                  "calls": 2713,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.transfer": {
+                  "calls": 2721,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.revokeAndAttemptSpend": {
+                  "calls": 2735,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.approve": {
+                  "calls": 2765,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.overdraw": {
+                  "calls": 2658,
+                  "reverts": 0,
+                  "discards": 0
+                },
+                "test/LaunchTokenInvariant.t.sol:LaunchTokenHandler.crossPvpBoundary": {
+                  "calls": 2792,
+                  "reverts": 0,
+                  "discards": 0
+                }
+              }
+            },
+            "predicates": [
+              "invariantSupplyTransfersAllowancesAndEligibilityStayConsistent"
+            ]
+          },
+          {
+            "test": "testAllTokenHandlerBranchesIncludingFullBalanceAndThresholds()",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "node": {
+    "command": "npm test",
+    "passed": 36,
+    "failed": 0,
+    "status": "passed"
+  },
+  "localEndToEnd": {
+    "status": "passed",
+    "report": "local-e2e.json"
+  },
+  "protocolReadReview": {
+    "status": "passed",
+    "report": "protocol-review.json",
+    "policyChanged": false
+  },
+  "productionRouterForkReview": {
+    "status": "passed",
+    "report": "production-router-review.json",
+    "currencyOrderings": 2
+  },
+  "newConfirmedImplementationFindings": [],
+  "publicTransactions": 0,
+  "deploymentStatus": "Prepared, not deployed; payments disabled and worker unconfigured.",
+  "integrationLimits": [
+    "IMD admission and final live deployment verification remain.",
+    "Game coordination, wallet-signature binding, signer injection and verified oracle-result application remain separate.",
+    "Reserve funding, native gas funding, owner configuration and a paid live validation are required before operation."
+  ]
+}
