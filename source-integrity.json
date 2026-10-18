@@ -7,13 +7,13 @@
     },
     {
       "path": "ADAPTATION.md",
-      "sha256": "6897bc5e16b43d7a83bd23836c16f997be976e9f8d944947e131252876a46066",
-      "bytes": 12663
+      "sha256": "68b040ed03ccbdcef2ddaffc4de192c86e6bdafaff943fcbd998fe399bbd3bfa",
+      "bytes": 17091
     },
     {
       "path": "README.md",
-      "sha256": "160558076fedf5077cc314dc9ac5a4d5e773c2e090d2b1b4cc04b321c2310f9e",
-      "bytes": 17376
+      "sha256": "492a4ec19a9dad7baa2fc32f66dce67ec3fbd144a8175b10c2a45032dd833deb",
+      "bytes": 18585
     },
     {
       "path": "config.example.json",
@@ -42,8 +42,8 @@
     },
     {
       "path": "deployment/README.md",
-      "sha256": "daaae7df42651a9c330453b067f270bd46058f1a6113e7561f2ddb966de08b88",
-      "bytes": 3703
+      "sha256": "44a8d980fe762929ab9a76325550741ae854d917d2dd8c3a0e8fe0bb2fee3b05",
+      "bytes": 4040
     },
     {
       "path": "deployment/abi/CabalFundingHook.json",
@@ -1622,8 +1622,8 @@
     },
     {
       "path": "reports/local-e2e.json",
-      "sha256": "7911f28f213c3e68148588ea580cb8dcd43d84052787126e40c1c6616693d535",
-      "bytes": 775
+      "sha256": "81a3a329b370199713db53d28359ba13e17bd816426245fc5c7593f44c9f08ba",
+      "bytes": 860
     },
     {
       "path": "reports/oracle-preflight-review.json",
@@ -1647,18 +1647,18 @@
     },
     {
       "path": "reports/solidity-tests.json",
-      "sha256": "c1c57c67a1ff3d50ba3e1c3f252b7a959056cbbbc0a69bb2f8f8322fcf93014e",
-      "bytes": 6351
+      "sha256": "f2376bd36d8df7982be30aa067700f5a5a07631eda7ed98990245101ec063b62",
+      "bytes": 6333
     },
     {
       "path": "reports/validation.json",
-      "sha256": "efb222d1d9a612df34af1316c1f8764fded0ad33c0db290df9798390120ee451",
-      "bytes": 4651
+      "sha256": "01354b1d1df63a08ed5042b687c690a62c770a92f3dbae3b7e1c21defba2a67a",
+      "bytes": 4683
     },
     {
       "path": "reports/worker-tests.tap",
-      "sha256": "c3d76b8ae978cad3fd63455826a800d80f67d52cf4fe6485d3d3691aced82f4c",
-      "bytes": 7792
+      "sha256": "2c1ab3da9c5e4d60a799c6f21917377e5109fb0e4dbedd3af654e90033f1278b",
+      "bytes": 8745
     },
     {
       "path": "scripts/check-oracle.mjs",
@@ -1677,8 +1677,8 @@
     },
     {
       "path": "scripts/package-source.mjs",
-      "sha256": "d35c39e9bbe1eebb5aeed5549941f052f9c61e3c6b83372880be949dc5da49a7",
-      "bytes": 4981
+      "sha256": "54a2c571ca74768e6fd56cab3a0ef3d51d4c8a005bb76d891bc7fb4ca56c695d",
+      "bytes": 5061
     },
     {
       "path": "scripts/review-factory.mjs",
@@ -1692,8 +1692,8 @@
     },
     {
       "path": "scripts/simulate.mjs",
-      "sha256": "9d1049ede9f8f6ac2c664f0dfb09d047d64289fcbc3fa936428b790c2bf82775",
-      "bytes": 8986
+      "sha256": "cbb3ce9386b0a3bcf8414e7d909f274837ba7fbd50e204810ca20ff2c67f4f95",
+      "bytes": 10928
     },
     {
       "path": "scripts/vendor-solidity.mjs",
@@ -1702,8 +1702,8 @@
     },
     {
       "path": "src/CabalFundingHook.sol",
-      "sha256": "016e8201eb71b9f60ecbf7393e5b4eb567bc038b18744eb1c338c55c9b9979a9",
-      "bytes": 13238
+      "sha256": "e6773139826feae74f137e1d168da76e56fd460c3d3aa8562406c58100dedd26",
+      "bytes": 13762
     },
     {
       "path": "src/LaunchToken.sol",
@@ -1712,8 +1712,8 @@
     },
     {
       "path": "test/CabalFundingHook.t.sol",
-      "sha256": "890feb466e7642372780db2eaff382c667f2b4a61a486eccc9b9acf35d7af697",
-      "bytes": 18660
+      "sha256": "bfc1b0a6de825c3881f216a78b7be5e79bc56ee5155b8aae2d0a86edd13ba6e7",
+      "bytes": 21442
     },
     {
       "path": "test/FactoryReviewMath.sol",
@@ -1772,8 +1772,8 @@
     },
     {
       "path": "test/worker.test.mjs",
-      "sha256": "87e9644e62450edf739193fa5b5a7db54f28e9c697785a1263a47b8df212051d",
-      "bytes": 17909
+      "sha256": "28c9a618b161a2e2fa0dcdfabc75457b3255ba3b708ad9eb67998a7972bdec3f",
+      "bytes": 23557
     },
     {
       "path": "vendor-integrity.json",
@@ -1872,13 +1872,13 @@
     },
     {
       "path": "worker/budget.mjs",
-      "sha256": "ad253e296e6be4cab808b029a4b88d04098fd46ba1a79bb98e8216300dc9afa4",
-      "bytes": 2821
+      "sha256": "286b5a75647362a282347cd4851298608d1a15c677d9df96402d514b9fce9e1d",
+      "bytes": 3182
     },
     {
       "path": "worker/chain-adapter.mjs",
-      "sha256": "ef4c38fdef6d0dee5f95bfe049941fd257fcc21975e7429101873a68103fec48",
-      "bytes": 8861
+      "sha256": "3f1fd3e1cbc20717b623d3bbbc9344590571640bfcc67aac7d47b60733617003",
+      "bytes": 9171
     },
     {
       "path": "worker/cli.mjs",
@@ -1886,9 +1886,14 @@
       "bytes": 683
     },
     {
+      "path": "worker/day-cap.mjs",
+      "sha256": "98fea1f57b001b88e2aaa3e9e769a50b47d02dea4e4f6ee5ac69054edf2091cc",
+      "bytes": 1447
+    },
+    {
       "path": "worker/engine.mjs",
-      "sha256": "69756a9e514f80738a1425d7967d10715ab3def3480cdc6e5e0169d4c92b8734",
-      "bytes": 6387
+      "sha256": "faaecf5fb6cc1d14ec3980645972242e123045456aa7a8fc6bcbb72e48cf3991",
+      "bytes": 7045
     },
     {
       "path": "worker/oracle-client.mjs",
@@ -1902,8 +1907,8 @@
     },
     {
       "path": "worker/store.mjs",
-      "sha256": "b2d1571b853e8515d4ea12df987459d6b6419d2ced38a96941ed0e44f976a4d9",
-      "bytes": 7778
+      "sha256": "625b9c46980f7f3d22e0898b778e6cd828b93c0032d8e67d2d52b6a48608723f",
+      "bytes": 8964
     }
   ]
 }

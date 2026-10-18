@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "environment": "Disposable local Anvil chain 31337",
+  "realUniswapPoolManager": true,
+  "buyInputImd": "1000",
+  "customTaxImd": "40",
+  "requestAllocationImd": "28",
+  "treasuryPaidImd": "12",
+  "requestsPaid": 8,
+  "requestSpendImd": "4",
+  "requestFundRemainingImd": "24",
+  "delayedInclusionSeconds": 301,
+  "requestDeadlineSeconds": 1800,
+  "lostBroadcastReplyRecoveredAfterRestart": true,
+  "duplicateRequestsPaid": 0,
+  "dayCapDeferredWithoutTransaction": true,
+  "dayCapHeadroomMatchesContract": true,
+  "liveChainTransactions": 0,
+  "realFundsSpent": "0",
+  "notes": [
+    "All tokens, gas and wallets in this run are local fixtures.",
+    "This tests actual compiled contracts and the same transaction adapter used by the worker.",
+    "IMD intake is a mock in this test; no real swarm call or coin launch occurred."
+  ]
+}
