@@ -4,11 +4,11 @@ import { readFile, writeFile, mkdtemp, rm, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
-import { createPublicClient,createWalletClient,http,defineChain,concatHex,encodeDeployData,getCreate2Address,keccak256,toHex,formatEther } from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
+import { createPublicClient,createWalletClient,http,defineChain,concatHex,encodeDeployData,getCreate2Address,keccak256,toHex,formatEther,parseTransaction,decodeFunctionData } from '../vendor/viem.mjs';
+import { privateKeyToAccount } from '../vendor/viem.mjs';
 import { FundingStore,decisionKey } from '../worker/store.mjs';
 import { FundingEngine } from '../worker/engine.mjs';
-import { createLocalChainAdapter } from '../worker/chain-adapter.mjs';
+import { createLocalChainAdapter, REQUEST_DEADLINE_SECONDS, ABI } from '../worker/chain-adapter.mjs';
 
 const dir=await mkdtemp(join(tmpdir(),'funding-evm-'));
 const port=18549;
@@ -40,8 +40,9 @@ try {
   const hookArtifact=await artifact('CabalFundingHook.sol','CabalFundingHook');
   const treasury='0x000000000000000000000000000000000000beef';
   const initCode=encodeDeployData({abi:hookArtifact.abi,bytecode:hookArtifact.bytecode.object,args:[manager.address,account.address,imd.address,intake.address,account.address,treasury]});
+  const initCodeHash=keccak256(initCode);
   let salt,hookAddress;
-  for(let i=0;i<1000000;i++) {salt=toHex(i,{size:32});hookAddress=getCreate2Address({from:create2.address,salt,bytecodeHash:keccak256(initCode)});if((BigInt(hookAddress)&0x3fffn)===0x20ccn) break;}
+  for(let i=0;i<1000000;i++) {salt=toHex(i,{size:32});hookAddress=getCreate2Address({from:create2.address,salt,bytecodeHash:initCodeHash});if((BigInt(hookAddress)&0x3fffn)===0x20ccn) break;}
   assert.equal(BigInt(hookAddress)&0x3fffn,0x20ccn);await call(create2,'deploy',[salt,initCode]);
   const hook={address:hookAddress,abi:hookArtifact.abi};
   const router=await deploy('PoolSwapTest.sol','PoolSwapTest',[manager.address]);
@@ -69,13 +70,23 @@ try {
   const rows=[];
   for(let round=1;round<=4;round++) for(let seat=0;seat<2;seat++) rows.push(store.enqueue({id:decisionKey(31337,hook.address,'fixture-duel',round,seat),match:'fixture-duel',amount:5n*10n**17n,body:JSON.stringify({v:1,question:'Local simulated decision',round,seat})}));
   const send=adapter.broadcast;let once=true;
-  adapter.broadcast=async raw=>{const hash=await send(raw);if(once){once=false;throw Error('simulated lost RPC reply');}return hash;};
+  adapter.broadcast=async raw=>{
+    if(once) {
+      const tx=parseTransaction(raw),decoded=decodeFunctionData({abi:ABI,data:tx.data});
+      assert.equal(decoded.functionName,'payRequest');
+      const deadline=decoded.args[3],now=BigInt(Math.floor(Date.now()/1000));
+      assert.ok(deadline>=now+BigInt(REQUEST_DEADLINE_SECONDS)-10n && deadline<=now+BigInt(REQUEST_DEADLINE_SECONDS));
+      // Advance the disposable chain, never the wall clock: the old five-minute deadline fails here.
+      await publicClient.request({method:'evm_setNextBlockTimestamp',params:[Number(now+301n)]});
+    }
+    const hash=await send(raw);if(once){once=false;throw Error('simulated lost RPC reply');}return hash;
+  };
   assert.equal((await cycle()).state,'uncertain');
   store.close();store=new FundingStore(db);engine=new FundingEngine({store,adapter,mode:'simulate'});
   assert.equal((await cycle()).state,'confirmed'); // restart finds mined payment, does not pay again
   for(let i=1;i<8;i++) {assert.equal((await cycle()).state,'submitted');assert.equal((await cycle()).state,'confirmed');}
   assert.equal(await read(intake,'count'),8n);assert.equal(await read(hook,'requestBalance'),24n*10n**18n);
   assert.equal(await read(imd,'balanceOf',[intake.address]),4n*10n**18n);store.closeMatch('fixture-duel');
-  const report={status:'passed',environment:'Disposable local Anvil chain 31337',realUniswapPoolManager:true,buyInputImd:'1000',customTaxImd:'40',requestAllocationImd:'28',treasuryPaidImd:'12',requestsPaid:8,requestSpendImd:'4',requestFundRemainingImd:'24',lostBroadcastReplyRecoveredAfterRestart:true,duplicateRequestsPaid:0,liveChainTransactions:0,realFundsSpent:'0',notes:['All tokens, gas and wallets in this run are local fixtures.','This tests actual compiled contracts and the same transaction adapter used by the worker.','IMD intake is a mock in this test; no real swarm call or coin launch occurred.']};
+  const report={status:'passed',environment:'Disposable local Anvil chain 31337',realUniswapPoolManager:true,buyInputImd:'1000',customTaxImd:'40',requestAllocationImd:'28',treasuryPaidImd:'12',requestsPaid:8,requestSpendImd:'4',requestFundRemainingImd:'24',delayedInclusionSeconds:301,requestDeadlineSeconds:REQUEST_DEADLINE_SECONDS,lostBroadcastReplyRecoveredAfterRestart:true,duplicateRequestsPaid:0,liveChainTransactions:0,realFundsSpent:'0',notes:['All tokens, gas and wallets in this run are local fixtures.','This tests actual compiled contracts and the same transaction adapter used by the worker.','IMD intake is a mock in this test; no real swarm call or coin launch occurred.']};
   await mkdir(new URL('../reports/',import.meta.url),{recursive:true});await writeFile(new URL('../reports/local-e2e.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
 } finally {store?.close();child.kill();await new Promise(resolve=>{if(child.exitCode!==null) resolve();else child.once('exit',resolve);});await rm(dir,{recursive:true,force:true});}

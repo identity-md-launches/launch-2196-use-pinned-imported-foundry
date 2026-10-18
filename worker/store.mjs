@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { randomUUID } from 'node:crypto';
-import { keccak256, toHex } from 'viem';
+import { keccak256, toHex } from '../vendor/viem.mjs';
 
 const units = value => { const n = BigInt(value); if (n < 0n) throw Error('Negative amount'); return n; };
 export const decisionKey = (chainId, contract, match, round, seat) => {

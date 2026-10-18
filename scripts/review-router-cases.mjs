@@ -2,7 +2,7 @@
 // This module creates no transport or signer; the caller confines writes to loopback.
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import {parseAbi,encodeAbiParameters,keccak256,formatEther,toFunctionSelector} from 'viem';
+import {parseAbi,encodeAbiParameters,keccak256,formatEther,toFunctionSelector} from '../vendor/viem.mjs';
 export const trading={router:'0x8876789976decbfcbbbe364623c63652db8c0904',quoter:'0x8dc178efb8111bb0973dd9d722ebeff267c98f94',permit2:'0x000000000022d473030f116ddee9f6b43ac78ba3'};
 const poolFields=[{name:'currency0',type:'address'},{name:'currency1',type:'address'},{name:'fee',type:'uint24'},{name:'tickSpacing',type:'int24'},{name:'hooks',type:'address'}];
 const permitAbi=parseAbi(['function approve(address token,address spender,uint160 amount,uint48 expiration)','function allowance(address owner,address token,address spender) view returns(uint160 amount,uint48 expiration,uint48 nonce)']);

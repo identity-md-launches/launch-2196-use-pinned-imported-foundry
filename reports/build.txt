@@ -1,0 +1,322 @@
+No files changed, compilation skipped
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/CabalFundingHook.sol:31:45
+   │
+31 │     bytes32 public constant ORACLE_ACTION = bytes32("oracle.request@oracle-1");
+   │                                             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'bytes32' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/CabalFundingHook.sol:93:17
+   │
+93 │         if (n > uint256(uint128(type(int128).max))) revert InvalidAmount();
+   │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'uint256' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/CabalFundingHook.sol:93:25
+   │
+93 │         if (n > uint256(uint128(type(int128).max))) revert InvalidAmount();
+   │                         ━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'uint128' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/CabalFundingHook.sol:94:16
+   │
+94 │         return int128(uint128(n));
+   │                ━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'int128' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/CabalFundingHook.sol:94:23
+   │
+94 │         return int128(uint128(n));
+   │                       ━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'uint128' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/CabalFundingHook.sol:105:9
+    │
+105 │         emit TaxAccrued(PoolId.unwrap(boundPool), fee);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[uninitialized-local]: local variable is read before being initialized
+    ╭▸ src/CabalFundingHook.sol:122:72
+    │
+122 │         return (IHooks.beforeSwap.selector, toBeforeSwapDelta(_bounded(fee), 0), 0);
+    │                                                                        ━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/uninitialized-local
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/CabalFundingHook.sol:116:33
+    │
+116 │             uint256 specified = uint256(exactInput ? -params.amountSpecified : params.amountSpecified);
+    │                                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/CabalFundingHook.sol:134:33
+    │
+134 │             uint256 specified = uint256(exactInput ? -params.amountSpecified : params.amountSpecified);
+    │                                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/CabalFundingHook.sol:136:45
+    │
+136 │             int256 expected = exactInput ? -int256(specified - specifiedFee) : int256(specified + specifiedFee);
+    │                                             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/CabalFundingHook.sol:136:80
+    │
+136 │             int256 expected = exactInput ? -int256(specified - specifiedFee) : int256(specified + specifiedFee);
+    │                                                                                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/CabalFundingHook.sol:141:24
+    │
+141 │         uint256 base = uint256(buy ? -int256(imdDelta) : int256(imdDelta));
+    │                        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[reentrancy-no-eth]: external call can be reentered before `pendingFees` is updated
+    ╭▸ src/CabalFundingHook.sol:151:9
+    │
+151 │         manager.unlock(abi.encode(amount));
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[divide-before-multiply]: division before multiplication may lose precision
+    ╭▸ src/CabalFundingHook.sol:156:37
+    │
+156 │         uint256 cumulativeRequest = (totalHarvested / 10) * 7 + (totalHarvested % 10) * 7 / 10;
+    │                                     ━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/divide-before-multiply
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/CabalFundingHook.sol:161:9
+    │
+161 │         emit FeesAllocated(amount, requests, treasuryAmount);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[unused-return]: return value of an external call is not used
+    ╭▸ src/CabalFundingHook.sol:151:9
+    │
+151 │         manager.unlock(abi.encode(amount));
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/unused-return
+
+warning[incorrect-strict-equality]: dangerous strict equality check on an externally-influenced value
+    ╭▸ src/CabalFundingHook.sol:152:13
+    │
+152 │         if (imd.balanceOf(address(this)) - beforeBalance != amount) revert BadTokenAccounting();
+    │             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/incorrect-strict-equality
+
+warning[incorrect-strict-equality]: dangerous strict equality check on an externally-influenced value
+    ╭▸ src/CabalFundingHook.sol:175:13
+    │
+175 │         if (imd.balanceOf(address(this)) - beforeBalance != amount) revert BadTokenAccounting();
+    │             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/incorrect-strict-equality
+
+warning[reentrancy-no-eth]: external call can be reentered before `paidRequests` is updated
+    ╭▸ src/CabalFundingHook.sol:220:21
+    │
+220 │         requestId = intake.request(ORACLE_ACTION, body, IOracleIntake.Callback(address(0), bytes4(0)), address(imd), amount);
+    │                     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/CabalFundingHook.sol:204:13
+    │
+204 │         if (block.timestamp > deadline) revert Expired();
+    │             ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/CabalFundingHook.sol:213:13
+    │
+213 │         if (spentDay != today) { spentDay = today; spentToday = 0; }
+    │             ━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/CabalFundingHook.sol:224:9
+    │
+224 │         emit RequestPaid(key, requestId, bodyHash, amount);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[incorrect-strict-equality]: dangerous strict equality check on an externally-influenced value
+    ╭▸ src/CabalFundingHook.sol:222:40
+    │
+222 │         if (requestId == bytes32(0) || beforeBalance - imd.balanceOf(address(this)) != amount) revert BadTokenAccounting();
+    │                                        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/incorrect-strict-equality
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:126:60
+    │
+126 │         hook.payRequest(bytes32(uint256(1)),"{}",0.5 ether,block.timestamp+10);
+    │                                                            ━━━━━━━━━━━━━━━
+    ‡
+132 │         vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │         ─────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:128:126
+    │
+128 │ …     vm.expectRevert(CabalFundingHook.DuplicateRequest.selector); hook.payRequest(bytes32(uint256(1)),"changed",0.5 ether,block.timestamp+10);
+    │                                                                                                                            ━━━━━━━━━━━━━━━
+    ‡
+132 │ …     vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │       ─────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:129:116
+    │
+129 │ …     vm.expectRevert(CabalFundingHook.LimitExceeded.selector); hook.payRequest(bytes32(uint256(2)),"{}",1 ether,block.timestamp+10);
+    │                                                                                                                  ━━━━━━━━━━━━━━━
+    ‡
+132 │ …     vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │       ─────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:130:60
+    │
+130 │         hook.payRequest(bytes32(uint256(2)),"{}",0.5 ether,block.timestamp+10);
+    │                                                            ━━━━━━━━━━━━━━━
+131 │         vm.expectRevert(CabalFundingHook.LimitExceeded.selector); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp…
+132 │         vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │         ─────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:131:118
+    │
+131 │ …     vm.expectRevert(CabalFundingHook.LimitExceeded.selector); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10);
+    │                                                                                                                    ━━━━━━━━━━━━━━━
+132 │ …     vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │       ─────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:132:17
+    │
+132 │         vm.warp(block.timestamp+1 days); hook.payRequest(bytes32(uint256(3)),"{}",0.5 ether,block.timestamp+10); checkConservation();
+    │         ────────━━━━━━━━━━━━━━━──────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/CabalFundingHook.t.sol:173:26
+    │
+173 │         uint256 deadline=block.timestamp+1800; vm.warp(block.timestamp+301);
+    │                          ━━━━━━━━━━━━━━━       ──────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+

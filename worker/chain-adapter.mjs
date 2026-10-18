@@ -1,4 +1,6 @@
-import { createPublicClient, http, parseAbi, encodeFunctionData, decodeEventLog, keccak256, toHex, isAddress, recoverTransactionAddress, parseTransaction } from 'viem';
+import { createOracleClient, ORACLE_ACTION, OracleTermsChanged } from './oracle-client.mjs';
+export const REQUEST_DEADLINE_SECONDS = 1800;
+import { createPublicClient, http, parseAbi, encodeFunctionData, decodeEventLog, keccak256, toHex, isAddress, recoverTransactionAddress, parseTransaction } from '../vendor/viem.mjs';
 
 export const ABI = parseAbi([
   'function imd() view returns(address)', 'function intake() view returns(address)', 'function treasury() view returns(address)',
@@ -37,6 +39,7 @@ export function createLocalChainAdapter(config,walletClient) {
 function buildAdapter(config,walletClient,local) {
   if(!same(walletClient?.account?.address,config.worker)) throw Error('Wrong worker signer');
   const client=createPublicClient({transport:http(config.rpcUrl,{timeout:8000,retryCount:0})});
+  const oracle=local?null:createOracleClient(config);
   const read=(functionName)=>client.readContract({address:config.contract,abi:ABI,functionName});
   const adapter={liveAuthorized:!local,localOnly:local,
     async assertReady() {
@@ -52,17 +55,18 @@ function buildAdapter(config,walletClient,local) {
       return {requestBalance,treasuryBalance,pendingFees,gas};
     },
     async terms() {
-      if(local) return {amount:config.requestPriceAtomic};
-      const response=await fetch(config.apiUrl+'/requests/capabilities',{signal:AbortSignal.timeout(8000)});
-      if(!response.ok) throw Error('Capabilities unavailable');
-      const cap=await response.json(); const chain=cap.onchain?.chains?.find(c=>c.chainId===config.chainId);
-      const action=chain?.actions?.find(a=>a.action==='oracle.request');
-      if(!same(chain?.asset,config.imd)||!same(chain?.intake,config.intake)||action?.version!=='oracle-1'||action?.amount!==config.requestPriceAtomic) throw Error('Request terms changed');
+      const action=local?{amount:config.requestPriceAtomic}:await oracle.terms();
+      const price=await client.readContract({address:config.intake,abi:parseAbi(['function priceOf(bytes32,address) view returns(uint256)']),functionName:'priceOf',args:[ORACLE_ACTION,config.imd]});
+      if(price!==BigInt(config.requestPriceAtomic)) throw new OracleTermsChanged();
       return action;
+    },
+    async preflight(body) {
+      // Simulation is restricted to loopback chain 31337 and a mock Intake; no HTTP admission claimed.
+      return local?{approved:true,simulationOnly:true}:oracle.preflight(body);
     },
     async prepare(row) {
       let functionName,args;
-      if(row.kind==='request') {functionName='payRequest'; args=[row.id,toHex(JSON.parse(row.payload).body),BigInt(row.amount),BigInt(Math.floor(Date.now()/1000)+300)];}
+      if(row.kind==='request') {functionName='payRequest'; args=[row.id,toHex(JSON.parse(row.payload).body),BigInt(row.amount),BigInt(Math.floor(Date.now()/1000)+REQUEST_DEADLINE_SECONDS)];}
       else if(row.kind==='harvest') {functionName='harvest'; args=[BigInt(row.amount)];}
       else if(row.kind==='treasury') {functionName='payTreasury'; args=[BigInt(row.amount)];}
       else throw Error('Unrecognized operation');

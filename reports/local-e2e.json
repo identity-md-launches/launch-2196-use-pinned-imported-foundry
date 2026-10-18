@@ -9,6 +9,8 @@
   "requestsPaid": 8,
   "requestSpendImd": "4",
   "requestFundRemainingImd": "24",
+  "delayedInclusionSeconds": 301,
+  "requestDeadlineSeconds": 1800,
   "lostBroadcastReplyRecoveredAfterRestart": true,
   "duplicateRequestsPaid": 0,
   "liveChainTransactions": 0,

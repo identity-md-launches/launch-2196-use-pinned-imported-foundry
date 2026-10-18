@@ -1,0 +1,10 @@
+{
+  "onchain": "univ4_hook",
+  "chainId": 4663,
+  "pairWith": "imd",
+  "owner": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+  "economics": {
+    "poolBps": 8800,
+    "remainderTo": "0x4251627b712762b6e81799698a05c6c9dff35c5d"
+  }
+}

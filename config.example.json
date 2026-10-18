@@ -6,7 +6,7 @@
   "contract": null,
   "deploymentBlock": null,
   "runtimeCodeHash": null,
-  "treasury": null,
+  "treasury": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
   "worker": null,
   "imd": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
   "intake": "0xa43e6f75ee006411f79ac1c84120606c2330de82",

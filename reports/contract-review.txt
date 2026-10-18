@@ -1,144 +1,85 @@
-CABAL FUNDING CONTRACT AND FACTORY REVIEW
-18 October 2026
+CABAL LAUNCH ADAPTATION — IMPLEMENTATION REVIEW
+19 October 2026 (Europe/Berlin)
 
-Outcome
-The 4/4 custom fee and 70/30 funding design passed this review's tests. The
-deployed Robinhood IMD LaunchFactory path was verified on a disposable local fork,
-including the actual IMD token, PoolManager, LaunchFees and Intake runtimes. No
-public launch, publication, paid request or real expenditure occurred.
+Status: source adapted, locally tested, operation disabled. No public deployment,
+paid oracle request, game operation or hosting. This is the implementing agent's
+review, not an independent audit or IMD admission.
 
-This is an implementation review by the coding agent, not an independent audit,
-an IMD approval, or a guarantee that no vulnerability remains.
+Audit dispositions and exact finding IDs: ADAPTATION.md.
+Reproduced and fixed: question length, missing free wording preflight, payment
+amount not bound to current Intake price, and five-minute transaction expiry.
+The deadline is now 30 minutes; arbitrary delays remain a liveness limitation.
+Preserved lifecycle risk: request reserves can be stranded if immutable
+oracle.request@oracle-1 is retired. No sweep/migration authority was added.
 
-Findings fixed
-M1 - Stale permissionless maintenance could block paid request processing.
-Location: worker/engine.mjs; worker/store.mjs.
-Anyone can call harvest/payTreasury. If another caller settled some or all of a
-saved unsigned maintenance operation, its next gas estimation reverted. The worker
-retried the same stale amount indefinitely and could hold requests behind it.
-The worker now resizes only unsigned maintenance to the available balance, or
-marks it superseded if nothing remains. Signed transactions are never rewritten.
-Regression tests cover complete and partial external settlement, including the
-immutability of already-signed bytes. Severity: medium availability issue.
+Scope read: both production contracts; all worker modules; Foundry token/hook
+and Node tests; the local accounting/recovery, factory and router scripts;
+manifest/constructor artifacts; pinned security/standards/addresses/L2/oracle
+references; vendored v4 hook dispatch/claims and OZ ERC20/SafeERC20/ReentrancyGuard
+paths relevant to the implementation. No protocol source rebuild was performed.
 
-M2 - Admission could use a stale funding balance during payment reconciliation.
-Location: worker/budget.mjs.
-Admission read the chain asynchronously before reserving funds. A simultaneous
-worker could finalize a payment and reduce the database reservation between the
-balance read and new admission, counting already-spent funds as available.
-Admission now holds and checks the same coordinator lease across its balance read
-and reservation. Concurrent workers cannot reconcile during that window; expired
-leases refuse the reservation. Two regression tests cover both cases.
-Severity: medium reservation/availability issue; not an on-chain withdrawal exploit.
+Contract conclusions
+- LaunchToken unchanged: 10^27 supply, 18 decimals, factory-only constructor mint,
+  plain transfers, no token admin; 50,000 CABAL inclusive read-only PvP threshold.
+- Hook constructor is six nonpayable address arguments; no external constructor
+  calls, proxies or initialization transaction. Mask 0x20cc validated on creation.
+- Initial callback requires PoolManager as caller and LaunchFactory as sender.
+  Bound-pool ID is permanent; the factory is trusted to choose CABAL/IMD/60.
+- Fee arithmetic and delta signs remain the imported floor(gross/25) and
+  ceil(net/24) behavior in all four swap modes and both orderings. Relevant
+  partial fills revert atomically; quoting refuses liquidity-bound oversized
+  orders. No double taxation of already-inclusive quotes.
+- ERC-6909 claim accrual never needs an Intake/oracle, treasury payment, worker,
+  request reserve, or native gas funding during a swap. Single-sided first buy
+  remains supported. Harvest is permissionless and cumulatively splits 70/30.
+- Prefunding/direct donations go entirely to requests. Treasury payout goes only
+  to the immutable project treasury and cannot block swaps.
+- Only the worker pays the immutable Intake/action, with zero callback. Exact
+  current price, amount bounds, key uniqueness, expiry, per-request and UTC-day
+  caps, exact approval/debit, approval clearing and reentrancy checks remain.
+- Owner can configure only the worker/caps/payment enablement. No arbitrary
+  sweep, tax/split/destination change, trading pause or upgrade exists.
 
-Launch preparation gap addressed
-The component package had the hook and mock tokens but no production launch token.
-Added LaunchToken: Cabal Coin / CABAL, exactly 1 billion, 18 decimals, no constructor
-arguments, no privileged minting and plain transfers. It mints to the deploying
-factory so the factory can perform the supply allocation. This remains local code.
+Worker conclusions
+- Eight decisions/BO5 remain reserved before admission: 4 IMD currently, sixteen
+  simultaneous matches need 64 IMD plus an explicitly configured operating reserve.
+- SQLite WAL/full-sync journal, coordinator lease/fencing, atomic balance read /
+  reservation admission and settled-unsigned-maintenance recovery are preserved.
+- Signed bytes/hash are durable before broadcast; absent transactions reuse those
+  bytes; pending/ambiguous/reorg outcomes stop new nonce allocation. Deep reorg
+  checkpoint changes halt persistently. Confirmed reverts are not repaid blindly.
+- Wording screening is required both at queueing and before preparing unsigned
+  payment. Legacy/altered bodies cannot skip it. HTTP failure signs nothing.
+- The live free check accepts a shorter projection, not the entire paid JSON.
+  Supported fields are sent unchanged; fixed paid fields are validated locally.
+  The response must be judged, blocker-free and for the expected question/types.
+- Current 0.5 IMD price is read from capabilities and Intake; changed prices or
+  panel limits halt. Actual payment price is rechecked atomically on chain.
+- Gas caps, minimum gas/IMD stops, injected signer and disabled defaults remain.
 
-Contract review coverage
-- Tax bases and exact-input/output deltas on buys and sells, both token orderings.
-- Claims rather than immediate withdrawal during swaps, including token-only seed.
-- Cumulative rounding, reserve solvency, IMD claim backing and separate treasury.
-- Permissionless settlement with fixed destinations; failure rollback and reentrancy.
-- Factory-only first initialization; fixed bound pool; manager-only callbacks.
-- Immutable tax/split/intake/treasury, explicit owner and worker authority boundaries.
-- Exact intake approval/debit, duplicate decision keys, limits, expiry and daily reset.
-- Partial-fill atomic rollback, prefunding and direct-donation accounting.
-- Constructor shape, hook CREATE2 permissions and deployed runtime size.
-No additional reproducible high/critical contract defect was identified in this
-scope. This does not clear all dependency or economic risks.
+Validation
+Current machine-readable totals: reports/validation.json, solidity-tests.json,
+worker-tests.tap. Full accounting/restart/delayed-inclusion result: local-e2e.json.
+Current deployed protocol hashes and policy: protocol-review.json.
+Production and test-router fork evidence: production-router-review.json and
+factory-fork-review.json. Each runs both currency orderings with authorized
+owner/treasury/remainder/requester constructor roles and verifies default-disabled
+state, bound pool, exact runtime hashes, fee collection, and real Intake runtime
+payments only on the disposable fork.
 
-Factory compatibility evidence
-Network snapshot: Robinhood chain 4663, block 91997011.
-Hash: 0xd765f2d85478357d57ab7aa94d9870884727e41537c320be76c15cb9740abf3f.
-Source: explorer-verified LaunchFactory, HookFlags, PoolFees, LaunchFees,
-LaunchRegistry and MerkleDistributor; current IMD hook policy version 30.
-Machine-readable runtime hashes and balances: reports/factory-fork-review.json.
+Free request checks are recorded in oracle-preflight-review.json. The original
+choice question is refused. A public arithmetic sample passes; this is not a
+real game question, paid admission, oracle verdict or result-consumer validation.
 
-PASS: Six static address constructor arguments; explicit owner, no external
-constructor calls. Factory accepts constructor-appended creation code.
-PASS: Token/hook address predictions match the actual factory CREATE2 deployment.
-PASS: Hook mask 0x20cc includes beforeInitialize. The initializer sender is the
-LaunchFactory, matching the hook's immutable factory check.
-PASS: Token-only liquidity seeding and initialized bound pool in both orderings.
-PASS: All four swap modes per ordering, 4% custom fee and 70/30 allocation.
-PASS: Fixed treasury payout and separate platform fee claim, without consuming
-our request reserve. Pool fee 12500, requester share 8000/10000, verified on fork.
-PASS: A local payment through the real Intake code debits exactly 0.5 IMD and
-clears approval. This produced no real chain event or off-chain oracle job.
-PASS: Hook runtime 9,962 bytes, below the 24,576-byte EVM limit.
-
-Selected test figures (same in both currency orderings)
-100 IMD initial buy -> 4 IMD custom tax. Following four swap modes, total tax:
-4.026382909430939684 IMD; request allocation 2.818468036601657778 IMD;
-treasury 1.207914872829281906 IMD. Separate collected IMD-side platform fees:
-0.962753868286664115 to the requester, 0.240688467071666029 to the network.
-
-Local verification
-18 Solidity tests passed, including 1,536 randomized cases. The mixed-operation
-property test checks all ledgers after 40 actions in each of its 512 cases.
-25 worker tests passed, including the four new recovery/concurrency regressions.
-Local worker/contract E2E passed after the fixes: eight payments and lost-reply
-restart recovery, no duplicate charge. Two factory fork scenarios passed.
-
-Subsequent production-router review, same date
-The deployed UniversalRouter, V4Quoter and Permit2 also passed on a local fork in
-both currency orderings. Eight quoted trade modes matched actual execution.
-Slippage, deadlines, approvals, stale prices and unfillable orders were exercised.
-See production-router-review.txt/json for the snapshot, evidence and limitations.
-No production hook or payment-worker changes were needed. Quoting rejects
-liquidity-bound partial fills; the observed UI then refuses submission. Smaller
-fillable orders quote normally. The raw-router partial-sell test leaves unused
-input with the trader and taxes only filled output. No browser-wallet test occurred.
-
-PvP eligibility addition and revalidation, same date
-LaunchToken now exposes a fixed PVP_MINIMUM_HOLDING of 50,000 CABAL and the
-read-only isPvpEligible(address) view. Token supply and transfer behavior are
-unchanged. A new boundary/transfer regression brings the Solidity suite to
-19 passing tests, still including 1,536 randomized cases. The latest production
-router report exercises the updated token deployed by the actual factory and
-checks its threshold/view in both currency orderings. The original factory-only
-report is historical evidence for the earlier token revision. This addition is
-not an independent audit. The game server must enforce entry separately.
-
-Residual launch requirements and limits
-1. IMD's off-chain build, manifest and independent review have not run for this
-   source. Use launch kind univ4_hook, not an evm_project launch with its default
-   guard. Manifest arguments: $poolManager, $factory, Robinhood IMD, Robinhood
-   Intake, $owner, and the explicitly designated treasury. No launch.json was made.
-2. Owner, treasury and supply remainder roles are assigned in the separate launch
-   draft. Worker, caps and minimum reserve remain unset. Do not fund a predicted
-   address before the approved manifest and deployment are checked.
-3. The original factory test used a Uniswap test router. The subsequent review
-   exercises the deployed production router/quoter locally. Recheck current
-   deployments, frontend encoding and the final pool before trading opens. Pin
-   the reviewed source repository/commit; IMD adaptation can change tested code.
-4. Request payments need the game coordinator, durable database, signer injection,
-   IMD result verification and timeout behavior. Those are not enabled here.
-5. The worker is trusted to ask legitimate questions within caps. A compromised
-   worker can waste its allowed daily request budget. The owner can raise caps;
-   limits therefore do not constrain a compromised owner. UTC-day limits allow
-   spending on both sides of midnight, rather than imposing a rolling 24-hour cap.
-6. The treasury and Intake are immutable, and there is no arbitrary owner sweep.
-   A bad treasury address, lost owner key, or retired Intake can strand funds or
-   administration. Do not prefund large sums until addresses and lifecycle are set.
-7. This review assumes the deployed IMD token and PoolManager remain suitable;
-   no fee-on-transfer/rebasing token or arbitrary pool pairing is supported.
-8. Trading volume does not guarantee sufficient IMD revenue, nor does the tax fund
-   the worker's native ETH gas. Funding/maintenance require a running coordinator.
-9. Windows Foundry Solar preprocessing emits import-resolution diagnostics; solc
-   compilation and EVM tests pass. No Slither/static-analysis clearance is claimed.
-
-Safety and privacy
-The fork's public RPC proxy allows only read methods. Writes went exclusively to
-local chain 31337; the deployer was impersonated locally and fixture IMD was added
-through local storage. No real wallet key, project account or branded launch body
-was submitted to IMD. Live execution remains disabled.
-
-Primary references
-https://imd.fun/docs/
-https://api.imd.fun/launch/policies
-https://api.imd.fun/reads/skill/uniswap-v4-hooks
-https://robin.etherscan.io/address/0xa25b02a1e93903b790e6aaf7da1b8b8d50294645#code
+Remaining limits
+Independent review/IMD admission, actual launch transaction/addresses, verified
+live pool/constructor/allocation, worker address and operating limits, separate
+IMD and ETH funding, project-hosted game/coordinator/result integration and a paid
+live validation remain. The proposed CREATE2 address is not a live receipt.
+The 88/10/2 allocation must be frozen explicitly; policy 30 defaults to 80/10/10.
+The factory returns atomic liquidity dust to the authorized remainder recipient.
+Platform 12500 fees and 80/20 requester/network split are outside custom 70/30.
+No static analyzer or browser-wallet flow was run. Dependency/protocol, L2
+sequencer/finality and authorized-owner/worker trust remain. Tax volume does not
+guarantee funding. A successful RequestPaid event proves payment, not admission
+or a verdict. No private gameplay, secret or production signer was used.

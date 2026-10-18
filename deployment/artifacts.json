@@ -1,0 +1,58 @@
+{
+  "status": "prepared_not_deployed",
+  "chainId": 4663,
+  "kind": "univ4_hook",
+  "factory": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+  "poolManager": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+  "owner": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+  "treasury": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+  "manifestFile": "launch.json",
+  "termsFile": "deployment/launch-terms.json",
+  "policyVersion": 30,
+  "hook": {
+    "source": "src/CabalFundingHook.sol",
+    "contract": "CabalFundingHook",
+    "constructorArgs": [
+      "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+      "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+      "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+      "0xa43e6f75ee006411f79ac1c84120606c2330de82",
+      "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+      "0x4251627b712762b6e81799698a05c6c9dff35c5d"
+    ],
+    "constructorBytes": "0x0000000000000000000000008366a39cc670b4001a1121b8f6a443a643e40951000000000000000000000000a25b02a1e93903b790e6aaf7da1b8b8d502946450000000000000000000000005f7bb59365ce557c26dbcaa4ee9d39a4b95b7127000000000000000000000000a43e6f75ee006411f79ac1c84120606c2330de820000000000000000000000004251627b712762b6e81799698a05c6c9dff35c5d0000000000000000000000004251627b712762b6e81799698a05c6c9dff35c5d",
+    "creationCodeKeccak256": "0x98625deb5b6df2f7e26a9aa0742bb36622cb9225cc7c0a3abd97b453e16845fd",
+    "initCodeKeccak256": "0x6d58ee1557d2c1a5f2bb49cde30c78a01a62e2ed655e5107ad5f85b95f3541db",
+    "proposedCreate2Salt": "0x0000000000000000000000000000000000000000000000000000000000001720",
+    "predictedAddress": "0xf48FC94eA3E8e096B3e85b5B925645217168E0CC",
+    "permissionMask": "0x20cc",
+    "addressMask": "0x3fff",
+    "runtimeKeccak256": "0xe002e444095eb296e54f14ed9f184ac853b471c487a2eeef691eba00dcde2a12",
+    "runtimeBytes": 10193
+  },
+  "token": {
+    "source": "src/LaunchToken.sol",
+    "contract": "LaunchToken",
+    "constructorArgs": [],
+    "creationCodeKeccak256": "0x59aac97f2f16b151b58cce75d0865dd94cd0865eb69eab65892bdc037c396969",
+    "runtimeKeccak256": "0xe4fa5c19f0134218cadbe7b24ed351e93304b662d14aefcba844019a33d9d79d",
+    "totalSupplyAtomic": "1000000000000000000000000000",
+    "addressStatus": "Assigned by factory CREATE2 using the actual launch number; no production token address claimed."
+  },
+  "deploymentState": {
+    "paymentsEnabled": false,
+    "workerConfigured": false,
+    "maxRequestAmount": "0",
+    "dailyLimit": "0"
+  },
+  "boundPoolStatus": "Verify keccak256(abi.encode(positionOf(actualLaunchNumber).key)) after launch; the token address and pool ID are not known before its launch number.",
+  "protocolSnapshot": {
+    "blockNumber": "92114268",
+    "blockHash": "0x5be85127166568576ed44600918838e86fd937a33de3c97c62a105759e1d0a1e"
+  },
+  "limits": [
+    "Proposed hook address is deterministic for these exact constructor bytes, factory and salt, not a deployment receipt. The IMD deployer may choose another valid salt.",
+    "No source attestation, launch number, contributor Merkle root or authorization signature is fabricated. IMD supplies those after acceptance.",
+    "The final deployer must freeze 8800 pool bps and the named remainder, keep factory LP custody, and verify the actual pool before enabling payments."
+  ]
+}

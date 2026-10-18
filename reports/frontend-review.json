@@ -1,0 +1,23 @@
+{
+  "status": "confirmed_by_reading_current_assets",
+  "checkedAt": "2026-10-18T22:20:52.949338+00:00",
+  "currentTokenPageReferencesChunk": true,
+  "chunkUrl": "https://explorer.imd.fun/_next/static/chunks/1fjby1-gan7u4.js",
+  "chunkSha256": "10526d0ca8c43c535d03c1083b14c3a699ce77b5d88abc38b7b7dc73ff78cb5b",
+  "matchesImportedChunkHash": true,
+  "command": "0x10",
+  "actions": "0x060c0f",
+  "extendedExactInputStruct": true,
+  "additionalUint256Field": {
+    "frontendName": "extra",
+    "routerMeaning": "minHopPriceX36",
+    "value": "0"
+  },
+  "currentUiMode": "exact_input",
+  "router": "0x8876789976decbfcbbbe364623c63652db8c0904",
+  "quoter": "0x8dc178efb8111bb0973dd9d722ebeff267c98f94",
+  "permit2": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+  "limitations": [
+    "Assets were read as text, never executed; no browser-wallet interaction or real trade occurred."
+  ]
+}

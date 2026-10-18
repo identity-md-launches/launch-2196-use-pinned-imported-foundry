@@ -1,4 +1,5 @@
-import { keccak256, toHex } from 'viem';
+import { OracleTermsChanged } from './oracle-client.mjs';
+import { keccak256, toHex } from '../vendor/viem.mjs';
 
 // The adapter is injected. No wallet, credentials, endpoint or broadcaster is created here.
 export class FundingEngine {
@@ -61,8 +62,11 @@ export class FundingEngine {
         if(row.kind==='request') {
           const terms=await this.adapter.terms();
           this.store.assertLease();
-          if(BigInt(terms.amount)!==BigInt(row.amount)) return {state:'price_changed',id:row.id};
+          if(BigInt(terms.amount)!==BigInt(row.amount)) {this.store.halt('Oracle price changed; operational review required');return {state:'price_changed',id:row.id};}
           if(BigInt(balances.requestBalance)<BigInt(row.amount)) return {state:'low_imd',id:row.id};
+          const checked=await this.adapter.preflight(JSON.parse(row.payload).body);
+          this.store.assertLease();
+          if(checked?.approved!==true) {this.store.patch(row.id,{state:'blocked',error:'Oracle wording check refused; no payment signed'});return {state:'blocked',id:row.id};}
         }
         this.store.patch(row.id,{state:'preparing'});
         const prepared=await this.adapter.prepare(row);
@@ -78,6 +82,7 @@ export class FundingEngine {
       catch(error) { this.store.patch(row.id,{error:'Broadcast outcome uncertain; reconcile saved transaction'}); return {state:'uncertain',id:row.id}; }
       return {state:'submitted',id:row.id,hash:row.hash};
     } catch(error) {
+      if(error instanceof OracleTermsChanged) {this.store.halt('Oracle terms changed; operational review required');return {state:'terms_changed'};}
       // Record a generic operational status, never wallet/transport exceptions that may contain credentials.
       this.store.event('worker_error',{message:'Worker operation failed; inspect local diagnostics and reconcile before retry'});
       return {state:'unavailable'};

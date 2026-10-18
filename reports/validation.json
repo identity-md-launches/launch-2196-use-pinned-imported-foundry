@@ -1,352 +1,47 @@
 {
-  "createdAt": "2026-10-18T19:27:46.865Z",
-  "status": "reviewed_production_router_fork_passed_live_disabled",
-  "contractTests": 19,
+  "createdAt": "2026-10-18T22:21:25.730Z",
+  "status": "local_validation_passed_live_disabled",
+  "contractTests": 22,
   "randomizedCases": 1536,
-  "workerTests": 25,
-  "endToEnd": {
-    "status": "passed",
-    "environment": "Disposable local Anvil chain 31337",
-    "realUniswapPoolManager": true,
-    "buyInputImd": "1000",
-    "customTaxImd": "40",
-    "requestAllocationImd": "28",
-    "treasuryPaidImd": "12",
-    "requestsPaid": 8,
-    "requestSpendImd": "4",
-    "requestFundRemainingImd": "24",
-    "lostBroadcastReplyRecoveredAfterRestart": true,
-    "duplicateRequestsPaid": 0,
-    "liveChainTransactions": 0,
-    "realFundsSpent": "0",
-    "notes": [
-      "All tokens, gas and wallets in this run are local fixtures.",
-      "This tests actual compiled contracts and the same transaction adapter used by the worker.",
-      "IMD intake is a mock in this test; no real swarm call or coin launch occurred."
-    ]
-  },
-  "factoryReview": {
-    "status": "passed",
-    "snapshot": {
-      "chainId": 4663,
-      "blockNumber": 91997011,
-      "blockHash": "0xd765f2d85478357d57ab7aa94d9870884727e41537c320be76c15cb9740abf3f"
-    },
-    "localChainId": 31337,
-    "publicTransactions": 0,
-    "realFundsSpent": "0",
-    "publicRpcMethods": {
-      "eth_getBlockByNumber": 2,
-      "eth_chainId": 3,
-      "eth_getBalance": 31,
-      "eth_getTransactionCount": 31,
-      "eth_getCode": 31,
-      "eth_getStorageAt": 143,
-      "eth_getTransactionReceipt": 106
-    },
-    "addresses": {
-      "factory": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
-      "manager": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
-      "imd": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
-      "intake": "0xa43e6f75ee006411f79ac1c84120606c2330de82",
-      "fees": "0xf053525ffe8f8d8973339e36ee8d455690fb73cb",
-      "payee": "0x4e0fa57bde726079356537e2f34d671e9f41adbc"
-    },
-    "runtimeHashes": {
-      "factory": "0x0f2b731631e11e699de1f5922c8b5b25e386c2784e7ad2ac22a3b3174416f100",
-      "manager": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626",
-      "imd": "0xa9a0e893f7d8327fe96f823291ad9199af5456c2f9fd80bbdeff29d1e91a93e2",
-      "intake": "0xd96f270d009efd0fda0a2da91bb7f835a2686182e3abccd18966984134d3b5e8",
-      "fees": "0x331d09b94bf6052e9c62668978b63c20e86b64f04734fd483e7516f84b954aaa"
-    },
-    "cases": [
-      {
-        "tokenSortsFirst": true,
-        "factoryDeploymentPassed": true,
-        "initCallbackPassed": true,
-        "permissionMask": "0x20cc",
-        "swapModesPassed": 4,
-        "customTaxCollectedImd": "4.026382909430939684",
-        "requestShareImd": "2.818468036601657778",
-        "treasuryPaidImd": "1.207914872829281906",
-        "platformFeeCollectionPassed": true,
-        "platformPayerFeeImd": "0.962753868286664115",
-        "platformNetworkFeeImd": "0.240688467071666029",
-        "realIntakeCodePaymentPassedLocally": true,
-        "approvalCleared": true,
-        "deploymentGasUsed": "4523616",
-        "hookRuntimeBytes": 9962
-      },
-      {
-        "tokenSortsFirst": false,
-        "factoryDeploymentPassed": true,
-        "initCallbackPassed": true,
-        "permissionMask": "0x20cc",
-        "swapModesPassed": 4,
-        "customTaxCollectedImd": "4.026382909430939684",
-        "requestShareImd": "2.818468036601657778",
-        "treasuryPaidImd": "1.207914872829281906",
-        "platformFeeCollectionPassed": true,
-        "platformPayerFeeImd": "0.962753868286664115",
-        "platformNetworkFeeImd": "0.240688467071666029",
-        "realIntakeCodePaymentPassedLocally": true,
-        "approvalCleared": true,
-        "deploymentGasUsed": "4500733",
-        "hookRuntimeBytes": 9962
-      }
-    ],
-    "fixtureBalanceMappingSlot": 5,
-    "limits": [
-      "Local fork exercises deployed factory, pool manager, IMD and intake code; no real launch or oracle admission occurred.",
-      "Local fixtures replace owner/treasury/requester; an Anvil account receives artificial IMD via a local storage override and the IMD deployer is impersonated only in the disposable fork.",
-      "Token launch number, cap/range, Merkle root, record and signatures are fixtures, not an approved IMD manifest.",
-      "Trading uses the Uniswap test router, not the production IMD web trading router.",
-      "Off-chain IMD manifest admission, audits, price quoting and UI router integration still require their own verification."
-    ]
-  },
-  "routerReview": {
-    "status": "passed",
-    "snapshot": {
-      "chainId": 4663,
-      "blockNumber": 92014305,
-      "blockHash": "0xbbed66a99689e770097fa7a3c6ced3082d92c3985c0ab545dcd0d995ac2d0b21"
-    },
-    "localChainId": 31337,
-    "publicTransactions": 0,
-    "realFundsSpent": "0",
-    "publicRpcMethods": {
-      "eth_getBlockByNumber": 2,
-      "eth_chainId": 3,
-      "eth_getBalance": 34,
-      "eth_getTransactionCount": 34,
-      "eth_getCode": 34,
-      "eth_getStorageAt": 395,
-      "eth_getTransactionReceipt": 171
-    },
-    "addresses": {
-      "factory": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
-      "manager": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
-      "imd": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
-      "intake": "0xa43e6f75ee006411f79ac1c84120606c2330de82",
-      "fees": "0xf053525ffe8f8d8973339e36ee8d455690fb73cb",
-      "payee": "0x4e0fa57bde726079356537e2f34d671e9f41adbc"
-    },
-    "runtimeHashes": {
-      "factory": "0x0f2b731631e11e699de1f5922c8b5b25e386c2784e7ad2ac22a3b3174416f100",
-      "manager": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626",
-      "imd": "0xa9a0e893f7d8327fe96f823291ad9199af5456c2f9fd80bbdeff29d1e91a93e2",
-      "intake": "0xd96f270d009efd0fda0a2da91bb7f835a2686182e3abccd18966984134d3b5e8",
-      "fees": "0x331d09b94bf6052e9c62668978b63c20e86b64f04734fd483e7516f84b954aaa",
-      "router": "0x2ce6aaaf9f4151f5e1cbf774668772f17f532ae11b15e9284fd0a072a8b0fbde",
-      "quoter": "0xd707b1da8cb165e5ea35a3b4450d971eb562ec171e23492aa117036b78a868f6",
-      "permit2": "0x5208783f52488f7d3493e5e38311ab707c1d75457fe472a19b0b4d57d66a7fca"
-    },
-    "cases": [
-      {
-        "tokenSortsFirst": true,
-        "factoryDeploymentPassed": true,
-        "initCallbackPassed": true,
-        "permissionMask": "0x20cc",
-        "swapModesPassed": 4,
-        "customTaxCollectedImd": "4.026382909430939684",
-        "requestShareImd": "2.818468036601657778",
-        "treasuryPaidImd": "1.207914872829281906",
-        "platformFeeCollectionPassed": true,
-        "platformPayerFeeImd": "0.962753868286664115",
-        "platformNetworkFeeImd": "0.240688467071666029",
-        "realIntakeCodePaymentPassedLocally": true,
-        "approvalCleared": true,
-        "deploymentGasUsed": "4543732",
-        "hookRuntimeBytes": 9962,
-        "tradingReview": {
-          "quotes": [
-            {
-              "side": "buy",
-              "mode": "exact_input",
-              "quote": "36358207.689743542841401246",
-              "input": "100",
-              "output": "36358207.689743542841401246",
-              "customTaxImd": "4",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "sell",
-              "mode": "exact_input",
-              "quote": "0.257802997676140878",
-              "input": "100000",
-              "output": "0.257802997676140878",
-              "customTaxImd": "0.010741791569839203",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "buy",
-              "mode": "exact_output",
-              "quote": "0.286861279860845348",
-              "input": "0.286861279860845348",
-              "output": "100000",
-              "customTaxImd": "0.011474451194433814",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "sell",
-              "mode": "exact_output",
-              "quote": "38786.414532896123496253",
-              "input": "38786.414532896123496253",
-              "output": "0.1",
-              "customTaxImd": "0.004166666666666667",
-              "quoteMatchesExecution": true
-            }
-          ],
-          "quoteCallsLeaveNoFees": true,
-          "slippageRejectsAtomically": true,
-          "maximumInputEnforced": true,
-          "expiredDeadlineRejected": true,
-          "permit2ApprovalRequired": true,
-          "erc20ApprovalRequired": true,
-          "staleQuoteRejectedAfterPriceMove": true,
-          "freshQuoteSucceedsAfterPriceMove": true,
-          "noRouterResidual": true,
-          "partialSell": {
-            "quoterRejectsPartialFill": true,
-            "quoterError": "NotEnoughLiquidity(bytes32)",
-            "smallerFillableAmountQuotes": true,
-            "rawRouterRequestedTokens": "56319421.275210646717905438",
-            "rawRouterTokensUsed": "36780917.575080818146277169",
-            "unusedTokensRemainWithTrader": true,
-            "rawRouterNetImdReceived": "90.911263715899617255",
-            "taxOnFilledAmountOnly": true,
-            "uiDoesNotSubmitUnquotedTrade": true
-          },
-          "impossibleExactOutputRejectedByQuoterAndRouter": true,
-          "scope": "Exact-input path mirrors Explorer UI. Exact-output adds coverage of the deployed router, although the current UI exposes only exact input. Partial-fill raw-router test deliberately bypasses the UI only on the local fork."
-        }
-      },
-      {
-        "tokenSortsFirst": false,
-        "factoryDeploymentPassed": true,
-        "initCallbackPassed": true,
-        "permissionMask": "0x20cc",
-        "swapModesPassed": 4,
-        "customTaxCollectedImd": "4.026382909430939684",
-        "requestShareImd": "2.818468036601657778",
-        "treasuryPaidImd": "1.207914872829281906",
-        "platformFeeCollectionPassed": true,
-        "platformPayerFeeImd": "0.962753868286664115",
-        "platformNetworkFeeImd": "0.240688467071666029",
-        "realIntakeCodePaymentPassedLocally": true,
-        "approvalCleared": true,
-        "deploymentGasUsed": "4520825",
-        "hookRuntimeBytes": 9962,
-        "tradingReview": {
-          "quotes": [
-            {
-              "side": "buy",
-              "mode": "exact_input",
-              "quote": "36358207.68974354284140125",
-              "input": "100",
-              "output": "36358207.68974354284140125",
-              "customTaxImd": "4",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "sell",
-              "mode": "exact_input",
-              "quote": "0.257802997676140878",
-              "input": "100000",
-              "output": "0.257802997676140878",
-              "customTaxImd": "0.010741791569839203",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "buy",
-              "mode": "exact_output",
-              "quote": "0.286861279860845348",
-              "input": "0.286861279860845348",
-              "output": "100000",
-              "customTaxImd": "0.011474451194433814",
-              "quoteMatchesExecution": true
-            },
-            {
-              "side": "sell",
-              "mode": "exact_output",
-              "quote": "38786.414532896123496249",
-              "input": "38786.414532896123496249",
-              "output": "0.1",
-              "customTaxImd": "0.004166666666666667",
-              "quoteMatchesExecution": true
-            }
-          ],
-          "quoteCallsLeaveNoFees": true,
-          "slippageRejectsAtomically": true,
-          "maximumInputEnforced": true,
-          "expiredDeadlineRejected": true,
-          "permit2ApprovalRequired": true,
-          "erc20ApprovalRequired": true,
-          "staleQuoteRejectedAfterPriceMove": true,
-          "freshQuoteSucceedsAfterPriceMove": true,
-          "noRouterResidual": true,
-          "partialSell": {
-            "quoterRejectsPartialFill": true,
-            "quoterError": "NotEnoughLiquidity(bytes32)",
-            "smallerFillableAmountQuotes": true,
-            "rawRouterRequestedTokens": "56319421.275210646717905444",
-            "rawRouterTokensUsed": "36780917.575080818146277172",
-            "unusedTokensRemainWithTrader": true,
-            "rawRouterNetImdReceived": "90.911263715899617255",
-            "taxOnFilledAmountOnly": true,
-            "uiDoesNotSubmitUnquotedTrade": true
-          },
-          "impossibleExactOutputRejectedByQuoterAndRouter": true,
-          "scope": "Exact-input path mirrors Explorer UI. Exact-output adds coverage of the deployed router, although the current UI exposes only exact input. Partial-fill raw-router test deliberately bypasses the UI only on the local fork."
-        }
-      }
-    ],
-    "fixtureBalanceMappingSlot": 5,
-    "productionTrading": {
-      "addresses": {
-        "router": "0x8876789976decbfcbbbe364623c63652db8c0904",
-        "quoter": "0x8dc178efb8111bb0973dd9d722ebeff267c98f94",
-        "permit2": "0x000000000022d473030f116ddee9f6b43ac78ba3"
-      },
-      "frontendUrl": "https://explorer.imd.fun/_next/static/chunks/1fjby1-gan7u4.js",
-      "extendedSwapParams": true,
-      "command": "0x10",
-      "exactInputActions": "0x060c0f",
-      "slippageBps": 100,
-      "deadlineSeconds": 600
-    },
-    "limits": [
-      "Local fork exercises deployed factory, pool manager, IMD and intake code; no real launch or oracle admission occurred.",
-      "Local fixtures replace owner/treasury/requester; an Anvil account receives artificial IMD via a local storage override and the IMD deployer is impersonated only in the disposable fork.",
-      "Token launch number, cap/range, Merkle root, record and signatures are fixtures, not an approved IMD manifest.",
-      "Trading uses the deployed production UniversalRouter, V4Quoter and Permit2 with the observed IMD UI encoding. The actual browser wallet flow was not clicked and no real pool exists yet.",
-      "IMD off-chain manifest acceptance and independent review remain. Recheck production frontend/deployment addresses and quotes against the final live pool before trading opens."
-    ]
+  "workerAndArtifactTests": 36,
+  "fuzzSeed": "0x25b0e155b7d99a4afe16ce19daf869cbff1cc18990f23669c40b4f5e6ad46323",
+  "checks": {
+    "build": "forge build --offline",
+    "solidity": "forge test --offline",
+    "worker": "node --test test/*.test.mjs",
+    "accountingAndRecovery": "scripts/simulate.mjs",
+    "factory": "scripts/review-factory.mjs",
+    "productionRouter": "scripts/review-factory.mjs --production-router",
+    "protocol": "scripts/check-protocol.mjs",
+    "freeOracleChecks": "scripts/check-oracle.mjs",
+    "artifacts": "scripts/launch-artifacts.mjs"
   },
   "review": {
     "independent": false,
-    "mediumFindingsFixed": 2,
-    "additionalReproducibleHighOrCriticalFindings": 0
+    "importedFindingsFixed": 4,
+    "retainedLifecycleRisk": "immutable Intake/action can strand request funding",
+    "newHighOrCriticalFindingsReproduced": 0
   },
-  "sourceFiles": 339,
-  "privacyFindings": 0,
   "publicChainTransactions": 0,
+  "paidLiveRequests": 0,
   "realFundsSpent": "0",
   "activation": {
     "enabled": false,
     "coinLaunched": false,
     "gameConnected": false,
     "remaining": [
-      "production worker address and spending/reserve/gas limits",
-      "reviewed public source repository and commit",
-      "independent audit/IMD review panel and off-chain manifest acceptance",
-      "production signer/coordinator and verified result integration with durable storage",
-      "final deployed-pool revalidation and separate authorization for deployment and any paid smoke test"
+      "IMD source attestation/admission and final deployment",
+      "owner-configured worker and gas/spending/operating-reserve limits",
+      "separate IMD reserve funding and native ETH gas funding",
+      "project-hosted durable coordinator and verified game-result integration",
+      "final live pool/router checks and a paid live validation"
     ]
   },
-  "toolLimitations": [
-    "Windows Foundry Solar preprocessing emits import diagnostics; solc compilation and EVM execution pass. No static-analysis clearance claimed.",
-    "Production router/quoter contract paths are tested on a local fork; the actual browser-wallet flow has not been exercised."
+  "limits": [
+    "Agent implementation review, not independent audit or protocol source rebuild. Slither/Mythril were not run.",
+    "Fork exercises deployed runtime. Actual browser wallet flow and paid oracle admission/delivery were not tested.",
+    "Two confirmations and latest canonical checkpoint checks are not a guarantee of L1 finality.",
+    "The oracle wording check is a free screen, not a paid admission guarantee."
   ],
   "tests": [
     {
@@ -395,6 +90,11 @@
       "fuzzRuns": 0
     },
     {
+      "name": "testLongerDeadlineAllowsDelayedInclusionButStillExpires()",
+      "status": "Success",
+      "fuzzRuns": 0
+    },
+    {
       "name": "testPaidRequestsDeduplicateAndEnforceCaps()",
       "status": "Success",
       "fuzzRuns": 0
@@ -405,12 +105,22 @@
       "fuzzRuns": 0
     },
     {
+      "name": "testPaymentMustEqualCurrentIntakePriceEvenWithHigherOwnerCap()",
+      "status": "Success",
+      "fuzzRuns": 0
+    },
+    {
       "name": "testPlainCabalTransfersUntaxed()",
       "status": "Success",
       "fuzzRuns": 0
     },
     {
       "name": "testPrefundingAndDirectDonationsAreNotTaxed()",
+      "status": "Success",
+      "fuzzRuns": 0
+    },
+    {
+      "name": "testRetiredActionCannotSpendReserveAndDoesNotBlockTrading()",
       "status": "Success",
       "fuzzRuns": 0
     },

@@ -1,0 +1,34 @@
+{
+  "kind": "univ4_hook",
+  "hook": {
+    "contract": "CabalFundingHook",
+    "constructorArgs": [
+      "$poolManager",
+      "$factory",
+      "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+      "0xa43e6f75ee006411f79ac1c84120606c2330de82",
+      "$owner",
+      "0x4251627b712762b6e81799698a05c6c9dff35c5d"
+    ],
+    "permissions": [
+      "beforeInitialize",
+      "beforeSwap",
+      "afterSwap",
+      "beforeSwapReturnDelta",
+      "afterSwapReturnDelta"
+    ]
+  },
+  "token": {
+    "contract": "LaunchToken",
+    "name": "Cabal Coin",
+    "symbol": "CABAL",
+    "decimals": 18
+  },
+  "pool": {
+    "pairedCurrency": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+    "fee": 12500,
+    "tickSpacing": 60,
+    "initialPrice": "79228162514264337593543950336"
+  },
+  "notes": "Robinhood Chain 4663; LaunchFactory route. Deploy src/LaunchToken.sol without arguments: 1e27 atomic units minted once to the factory, plain transfers, no token administration, PVP_MINIMUM_HOLDING=50000000000000000000000 and read-only isPvpEligible. Deploy src/CabalFundingHook.sol with six address arguments in the listed order; owner resolves to 0x4251627b712762b6e81799698a05c6c9dff35c5d. Mine mask 0x20cc. Deployment terms MUST freeze poolBps=8800 and remainderTo=0x4251627b712762b6e81799698a05c6c9dff35c5d; 1000 bps swarm allocation and LP custody remain factory policy. See deployment/launch-terms.json; do not fall back to the policy default 8000/1000/1000. Policy 30 opening valuation is 2500 IMD; initialPrice is the required manifest value, not the actual seed price. Seed only CABAL, no 2500 IMD deposit and no custom-token cap override. Immutable 4% official-pool tax in IMD, ERC-6909 claims, cumulative 70/30 request/treasury allocation. Separate 12500 platform fee, 80/20 requester/network, is outside this split. No oracle or payout calls on swaps. Worker-only oracle.request@oracle-1 payments through immutable Intake, no callback, exact current price/debit, cleared allowance, key/expiry/UTC-day caps. Default payments disabled, worker unset. No live operation, deployment or paid oracle validation is claimed. See ADAPTATION.md and deployment/README.md for review and activation limits."
+}

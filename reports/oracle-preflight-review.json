@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "checkedAt": "2026-10-18T22:14:55.493Z",
+  "endpoint": "https://api.imd.fun/requests/check",
+  "publicTransactions": 0,
+  "paidRequests": 0,
+  "cases": {
+    "oversized": {
+      "httpStatus": 400,
+      "questionLength": 2500,
+      "error": "invalid_request",
+      "detail": "question: Too big: expected string to have <=2000 characters"
+    },
+    "original-fixture": {
+      "httpStatus": 200,
+      "questionLength": 87,
+      "judged": true,
+      "blockers": [
+        {
+          "code": "ambiguous_question",
+          "detail": "Careful researchers could read this question more than one way. Name the period, the unit, the rounding or the term you mean, and check again."
+        },
+        {
+          "code": "not_answerable",
+          "detail": "No one can answer this from public sources today: it may ask about the future, a matter of opinion, or something that is not public."
+        }
+      ],
+      "limits": {
+        "minPanelSize": 5,
+        "maxPanelSize": 100
+      }
+    },
+    "public-sample": {
+      "httpStatus": 200,
+      "questionLength": 65,
+      "judged": true,
+      "blockers": [],
+      "limits": {
+        "minPanelSize": 5,
+        "maxPanelSize": 100
+      }
+    }
+  },
+  "adapterLiveReadCheckPassed": true,
+  "limitations": [
+    "The endpoint accepts only its shorter documented wording input, not v/window/quorum/validForSeconds/guards. Those paid fields are fixed locally.",
+    "The public arithmetic sample is a screening smoke test, not a game decision, oracle verdict or paid admission.",
+    "Private game questions were neither supplied nor invented; each real question must pass screening before payment."
+  ]
+}

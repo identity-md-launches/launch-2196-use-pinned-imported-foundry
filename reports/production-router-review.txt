@@ -1,75 +1,33 @@
-CABAL PRODUCTION TRADING ROUTER REVIEW
-18 October 2026
+CABAL — LOCAL PRODUCTION ROUTER REVIEW
 
-Outcome: PASS for the tested on-chain paths on a disposable local fork.
-Public chain: Robinhood 4663, snapshot block 92014305.
-Snapshot hash: 0xbbed66a99689e770097fa7a3c6ced3082d92c3985c0ab545dcd0d995ac2d0b21
-Local execution: chain 31337. Public transactions: 0. Real funds spent: 0.
-This is not an independent audit or IMD launch approval.
+The current compiled token and hook pass both currency orderings through the
+actual forked Robinhood LaunchFactory, PoolManager, IMD, Intake, UniversalRouter,
+V4Quoter and Permit2 runtimes. See production-router-review.json for snapshot,
+runtime hashes, constructor args, salts, local addresses, bound pool IDs and all
+assertion results. Protocol addresses/hashes were independently re-read by the
+public-read script and compared to the imported pins (protocol-review.json).
 
-Production components inspected and executed locally
-UniversalRouter: 0x8876789976decbfcbbbe364623c63652db8c0904
-V4Quoter: 0x8dc178efb8111bb0973dd9d722ebeff267c98f94
-Permit2: 0x000000000022d473030f116ddee9f6b43ac78ba3
-Runtime hashes, public RPC read-method counts and results are in
-production-router-review.json. Source/ABI/frontend hashes and URLs are in
-test/fixtures/IMDTrading.provenance.json.
+Encoding preserves Explorer's extended exact-input struct, minHopPriceX36=0,
+UniversalRouter command 0x10 and actions 0x060c0f. Eight quotes equal execution:
+buy/sell exact input and exact output in both orderings. Exact output is extra
+contract coverage; the UI exposes exact input. The already-tax-inclusive quote
+is used directly. Slippage, maximum input, expired deadline, ERC20 and Permit2
+approvals, stale price and router residual tests pass atomically.
 
-The deployed router uses an extended swap struct containing minHopPriceX36.
-The Explorer passes zero for this field. Its exact-input command is 0x10 with
-actions 0x060c0f: swap, settle all input, take all output. The reviewed harness
-mirrors this encoding, a 1% minimum-output tolerance and ten-minute deadline.
-Both the router and quoter report the expected Robinhood PoolManager.
+Oversized sells are refused by V4Quoter with NotEnoughLiquidity(bytes32); smaller
+fillable amounts quote. A separate disposable raw-router partial sell asserts
+unused CABAL stays with the trader and tax applies only to filled output. This
+fixture does not bypass the UI's quote failure or permit unlimited fills in live
+integration. Impossible exact output also fails both quoting and execution.
 
-Passed in BOTH currency orderings
-- Actual LaunchFactory CREATE2 token/hook deployment and single-sided pool seed.
-- Buy/sell, exact-input/output: eight quoted trades equal actual execution.
-- Correct 4% custom fee, 70/30 allocation, fixed treasury payout and independent
-  platform-fee accounting. Quoting leaves no persistent hook charge.
-- Missing ERC-20 approval, missing Permit2 allowance, expired deadline,
-  insufficient minimum output and excessive required input all revert atomically.
-- A stale quote fails after a price move; a fresh quote then succeeds.
-- No IMD/CABAL residue retained by the router after ordinary trades.
-- Unfillable exact-output trades are rejected by both router and quoter.
-- Local payment through actual Intake code clears its exact allowance. This is
-  contract execution only; no real oracle was admitted or asked to decide.
+Owner/treasury/remainder/requester use the authorized project wallet. The 88/10/2
+allocation is checked before the remainder holder transfers local trade inventory
+to the disposable actor. Normal factory liquidity rounding returns 445/443 atomic
+CABAL dust to the remainder in these scenarios. LP fee collection remains the
+factory's zero-liquidity-change path and its 80/20 requester/network allocation;
+custom request reserves are unaffected.
 
-Liquidity limitation
-The production quoter refuses an oversized sell that would only partially fill,
-with NotEnoughLiquidity(bytes32), wrapped in UnexpectedRevertBytes. The observed
-Explorer disables submission when a quote fails. A smaller fillable sell quotes.
-This is liquidity behavior, not a promise that any sell size can execute.
-
-Separately bypassing the UI on the LOCAL fork proved the raw router can partially
-fill that exact-input CABAL sell, leave unspent CABAL with its trader, and tax only
-the IMD actually received. That direct test is not the Explorer's user flow. Where
-IMD is the specified amount, our hook intentionally rejects partial fills so a
-prepaid charge cannot be retained on unfilled input.
-
-Test harness corrections
-The first attempt expected the quoter to accept a partial fill; verified quoter
-source established the rejection above. The second attempt reused a depleted
-simulated balance for the other ordering. Cases now restore the funded baseline.
-Neither harness correction altered production hook or payment-worker code. The
-latest run also includes LaunchToken's fixed 50,000 CABAL read-only eligibility
-constant/view, verified after actual factory deployment in both orderings.
-
-Limits and next steps
-The current UI offers exact input only; exact-output coverage tests the deployed
-router's additional functionality. No browser wallet interaction was performed.
-Pin and publish the reviewed source only when authorized, then use its real public
-repository and commit in the launch request. IMD's imported-code adaptation,
-manifest, review panel and final deployed artifacts still need review. If IMD
-changes executable code, rerun the suite on that revision. Recheck current router
-addresses and quotes against the final pool before trading opens.
-
-The funding worker is not a service hosted by IMD, and the game is not connected
-to it. Configure its signer, limits, persistent storage, monitoring and verified
-oracle result consumer separately before enabling payments.
-
-Primary evidence
-https://explorer.imd.fun/_next/static/chunks/1fjby1-gan7u4.js
-https://robin.etherscan.io/address/0x8876789976decbfcbbbe364623c63652db8c0904#code
-https://robin.etherscan.io/address/0x8dc178efb8111bb0973dd9d722ebeff267c98f94#code
-https://imd.fun/docs/#from-your-repository
-https://api.imd.fun/launch/policies
+No real transaction, coin launch or oracle admission occurred. The fork uses
+local funding and locally impersonated roles only. Fixture launch numbers,
+Merkle roots and record metadata are not an IMD attestation. Browser wallet UX,
+final deployed pool and paid live request/result validation remain external.

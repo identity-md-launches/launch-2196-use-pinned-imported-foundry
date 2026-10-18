@@ -2,8 +2,8 @@
   "status": "passed",
   "snapshot": {
     "chainId": 4663,
-    "blockNumber": 92014305,
-    "blockHash": "0xbbed66a99689e770097fa7a3c6ced3082d92c3985c0ab545dcd0d995ac2d0b21"
+    "blockNumber": 92117971,
+    "blockHash": "0xd80277bf2b2942af76c7191af0480fa8fae04090692be87e2b0a016e996d7564"
   },
   "localChainId": 31337,
   "publicTransactions": 0,
@@ -11,26 +11,26 @@
   "publicRpcMethods": {
     "eth_getBlockByNumber": 2,
     "eth_chainId": 3,
-    "eth_getBalance": 34,
-    "eth_getTransactionCount": 34,
-    "eth_getCode": 34,
-    "eth_getStorageAt": 395,
-    "eth_getTransactionReceipt": 171
+    "eth_getBalance": 35,
+    "eth_getCode": 35,
+    "eth_getTransactionCount": 35,
+    "eth_getStorageAt": 397,
+    "eth_getTransactionReceipt": 134
   },
   "addresses": {
     "factory": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
-    "manager": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
     "imd": "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
     "intake": "0xa43e6f75ee006411f79ac1c84120606c2330de82",
     "fees": "0xf053525ffe8f8d8973339e36ee8d455690fb73cb",
-    "payee": "0x4e0fa57bde726079356537e2f34d671e9f41adbc"
+    "payee": "0x4e0fa57bde726079356537e2f34d671e9f41adbc",
+    "manager": "0x8366a39cc670b4001a1121b8f6a443a643e40951"
   },
   "runtimeHashes": {
     "factory": "0x0f2b731631e11e699de1f5922c8b5b25e386c2784e7ad2ac22a3b3174416f100",
-    "manager": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626",
     "imd": "0xa9a0e893f7d8327fe96f823291ad9199af5456c2f9fd80bbdeff29d1e91a93e2",
     "intake": "0xd96f270d009efd0fda0a2da91bb7f835a2686182e3abccd18966984134d3b5e8",
     "fees": "0x331d09b94bf6052e9c62668978b63c20e86b64f04734fd483e7516f84b954aaa",
+    "manager": "0xbd3881180b547f5fe817545743cfb4343e96b1bc6640dcd70c106b0066e95626",
     "router": "0x2ce6aaaf9f4151f5e1cbf774668772f17f532ae11b15e9284fd0a072a8b0fbde",
     "quoter": "0xd707b1da8cb165e5ea35a3b4450d971eb562ec171e23492aa117036b78a868f6",
     "permit2": "0x5208783f52488f7d3493e5e38311ab707c1d75457fe472a19b0b4d57d66a7fca"
@@ -38,6 +38,31 @@
   "cases": [
     {
       "tokenSortsFirst": true,
+      "localFixture": true,
+      "tokenAddress": "0x1F7271D9ce77E9ebBfDdFCac28b1eC6a099E714e",
+      "hookAddress": "0xf48FC94eA3E8e096B3e85b5B925645217168E0CC",
+      "hookSalt": "0x0000000000000000000000000000000000000000000000000000000000001720",
+      "hookConstructorArgs": [
+        "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+        "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+        "0xa43e6f75ee006411f79ac1c84120606c2330de82",
+        "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+        "0x4251627b712762b6e81799698a05c6c9dff35c5d"
+      ],
+      "hookInitCodeHash": "0x6d58ee1557d2c1a5f2bb49cde30c78a01a62e2ed655e5107ad5f85b95f3541db",
+      "hookRuntimeKeccak256": "0xe002e444095eb296e54f14ed9f184ac853b471c487a2eeef691eba00dcde2a12",
+      "tokenRuntimeKeccak256": "0xe4fa5c19f0134218cadbe7b24ed351e93304b662d14aefcba844019a33d9d79d",
+      "boundPool": "0xadc535dc363280aa753066ea01e695089a6b8756582aca0413080140db895f03",
+      "initializerSender": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+      "owner": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+      "treasury": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+      "poolBps": 8800,
+      "remainderBps": 200,
+      "swarmBps": 1000,
+      "liquidityDustToRemainderAtomic": "445",
+      "seedTokenAmountAtomic": "879999999999999999999999555",
+      "defaultDisabledVerified": true,
       "factoryDeploymentPassed": true,
       "initCallbackPassed": true,
       "permissionMask": "0x20cc",
@@ -50,8 +75,8 @@
       "platformNetworkFeeImd": "0.240688467071666029",
       "realIntakeCodePaymentPassedLocally": true,
       "approvalCleared": true,
-      "deploymentGasUsed": "4543732",
-      "hookRuntimeBytes": 9962,
+      "deploymentGasUsed": "4593362",
+      "hookRuntimeBytes": 10193,
       "tradingReview": {
         "quotes": [
           {
@@ -104,7 +129,7 @@
           "quoterRejectsPartialFill": true,
           "quoterError": "NotEnoughLiquidity(bytes32)",
           "smallerFillableAmountQuotes": true,
-          "rawRouterRequestedTokens": "56319421.275210646717905438",
+          "rawRouterRequestedTokens": "56319421.275210646717904993",
           "rawRouterTokensUsed": "36780917.575080818146277169",
           "unusedTokensRemainWithTrader": true,
           "rawRouterNetImdReceived": "90.911263715899617255",
@@ -117,6 +142,31 @@
     },
     {
       "tokenSortsFirst": false,
+      "localFixture": true,
+      "tokenAddress": "0xDae1C3BeAa0a57eD11992C54BC3423d8F5D6d633",
+      "hookAddress": "0x267d4324824F2fd216ef5B01fCE5e5015bcfe0CC",
+      "hookSalt": "0x00000000000000000000000000000000000000000000000000000000000f85e2",
+      "hookConstructorArgs": [
+        "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+        "0x5f7bb59365ce557c26dbcaa4ee9d39a4b95b7127",
+        "0xa43e6f75ee006411f79ac1c84120606c2330de82",
+        "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+        "0x4251627b712762b6e81799698a05c6c9dff35c5d"
+      ],
+      "hookInitCodeHash": "0x6d58ee1557d2c1a5f2bb49cde30c78a01a62e2ed655e5107ad5f85b95f3541db",
+      "hookRuntimeKeccak256": "0xe002e444095eb296e54f14ed9f184ac853b471c487a2eeef691eba00dcde2a12",
+      "tokenRuntimeKeccak256": "0xe4fa5c19f0134218cadbe7b24ed351e93304b662d14aefcba844019a33d9d79d",
+      "boundPool": "0xf7f3a83f1523f8ccd7642fc71040b6d8e35b800a159bea414a5c07ba5137d870",
+      "initializerSender": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
+      "owner": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+      "treasury": "0x4251627b712762b6e81799698a05c6c9dff35c5d",
+      "poolBps": 8800,
+      "remainderBps": 200,
+      "swarmBps": 1000,
+      "liquidityDustToRemainderAtomic": "443",
+      "seedTokenAmountAtomic": "879999999999999999999999557",
+      "defaultDisabledVerified": true,
       "factoryDeploymentPassed": true,
       "initCallbackPassed": true,
       "permissionMask": "0x20cc",
@@ -129,8 +179,8 @@
       "platformNetworkFeeImd": "0.240688467071666029",
       "realIntakeCodePaymentPassedLocally": true,
       "approvalCleared": true,
-      "deploymentGasUsed": "4520825",
-      "hookRuntimeBytes": 9962,
+      "deploymentGasUsed": "4570455",
+      "hookRuntimeBytes": 10193,
       "tradingReview": {
         "quotes": [
           {
@@ -183,7 +233,7 @@
           "quoterRejectsPartialFill": true,
           "quoterError": "NotEnoughLiquidity(bytes32)",
           "smallerFillableAmountQuotes": true,
-          "rawRouterRequestedTokens": "56319421.275210646717905444",
+          "rawRouterRequestedTokens": "56319421.275210646717905001",
           "rawRouterTokensUsed": "36780917.575080818146277172",
           "unusedTokensRemainWithTrader": true,
           "rawRouterNetImdReceived": "90.911263715899617255",
@@ -209,9 +259,10 @@
     "slippageBps": 100,
     "deadlineSeconds": 600
   },
+  "generatedAt": "2026-10-18T22:19:37.300Z",
   "limits": [
     "Local fork exercises deployed factory, pool manager, IMD and intake code; no real launch or oracle admission occurred.",
-    "Local fixtures replace owner/treasury/requester; an Anvil account receives artificial IMD via a local storage override and the IMD deployer is impersonated only in the disposable fork.",
+    "Owner/treasury/remainder/requester use the authorized project address; an Anvil account receives artificial IMD via a local storage override and the IMD deployer is impersonated only in the disposable fork.",
     "Token launch number, cap/range, Merkle root, record and signatures are fixtures, not an approved IMD manifest.",
     "Trading uses the deployed production UniversalRouter, V4Quoter and Permit2 with the observed IMD UI encoding. The actual browser wallet flow was not clicked and no real pool exists yet.",
     "IMD off-chain manifest acceptance and independent review remain. Recheck production frontend/deployment addresses and quotes against the final live pool before trading opens."
