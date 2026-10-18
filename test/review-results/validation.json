@@ -1,5 +1,5 @@
 {
-  "scope": "Tests and review evidence only; production source, worker, manifest, deployment artifacts, dependencies and configuration unchanged.",
+  "scope": "Tests and review evidence only; production source, worker, manifest, deployment artifacts, dependencies and configuration unchanged by this contribution. Rerun after the accepted worker day-cap revision.",
   "tools": {
     "forge": "1.8.3",
     "solc": "0.8.26",
@@ -14,10 +14,10 @@
     "command": "forge test",
     "fuzzSeed": "0x25b0e155b7d99a4afe16ce19daf869cbff1cc18990f23669c40b4f5e6ad46323",
     "status": "passed",
-    "passed": 57,
+    "passed": 63,
     "failed": 0,
     "skipped": 0,
-    "fuzzCases": 3536,
+    "fuzzCases": 4048,
     "invariantCampaigns": 3,
     "invariantPredicates": 7,
     "invariantCalls": 49152,
@@ -107,6 +107,36 @@
           },
           {
             "test": "testUninitializedHookCannotBeClaimedByAnOutsider()",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "suite": "test/CabalFundingHookDayCap.t.sol:CabalFundingHookDayCapTest",
+        "tests": [
+          {
+            "test": "testCapThatIsNotAMultipleOfThePriceRoundsDown()",
+            "status": "passed"
+          },
+          {
+            "test": "testFuzzWorkerHeadroomNeverExceedsWhatTheContractPays(uint256,uint256,uint256,uint256,uint256,uint256)",
+            "status": "passed",
+            "fuzzRuns": 512
+          },
+          {
+            "test": "testLoweringTheCapBelowTodaysSpendLeavesZeroHeadroomWithoutReset()",
+            "status": "passed"
+          },
+          {
+            "test": "testRevertedPaymentOnANewDayLeavesTheStaleDayRecorded()",
+            "status": "passed"
+          },
+          {
+            "test": "testSixteenReservedBo5sNeedA64ImdDailyCap()",
+            "status": "passed"
+          },
+          {
+            "test": "testStaleDayViewsStillAllowAFullNewDayCap()",
             "status": "passed"
           }
         ]
@@ -489,7 +519,7 @@
   },
   "node": {
     "command": "npm test",
-    "passed": 36,
+    "passed": 40,
     "failed": 0,
     "status": "passed"
   },
@@ -500,12 +530,14 @@
   "protocolReadReview": {
     "status": "passed",
     "report": "protocol-review.json",
-    "policyChanged": false
+    "policyChanged": false,
+    "blockNumber": "92141844"
   },
   "productionRouterForkReview": {
     "status": "passed",
     "report": "production-router-review.json",
-    "currencyOrderings": 2
+    "currencyOrderings": 2,
+    "blockNumber": 92141917
   },
   "newConfirmedImplementationFindings": [],
   "publicTransactions": 0,

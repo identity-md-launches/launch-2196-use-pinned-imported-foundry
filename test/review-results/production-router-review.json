@@ -2,8 +2,8 @@
   "status": "passed",
   "snapshot": {
     "chainId": 4663,
-    "blockNumber": 92125324,
-    "blockHash": "0x5bfabdc7cb1bdb4d4b53a2ddebcbb37ca64dd8976520a97c32306848213658f8"
+    "blockNumber": 92141917,
+    "blockHash": "0xf50b430994e2fa4b28b4016a69da00980c6643ce3744dea912663b95d070eec5"
   },
   "localChainId": 31337,
   "publicTransactions": 0,
@@ -15,7 +15,7 @@
     "eth_getTransactionCount": 35,
     "eth_getCode": 35,
     "eth_getStorageAt": 397,
-    "eth_getTransactionReceipt": 137
+    "eth_getTransactionReceipt": 133
   },
   "addresses": {
     "factory": "0xa25b02a1e93903b790e6aaf7da1b8b8d50294645",
@@ -259,7 +259,7 @@
     "slippageBps": 100,
     "deadlineSeconds": 600
   },
-  "generatedAt": "2026-10-18T22:32:05.056Z",
+  "generatedAt": "2026-10-18T23:00:07.799Z",
   "limits": [
     "Local fork exercises deployed factory, pool manager, IMD and intake code; no real launch or oracle admission occurred.",
     "Owner/treasury/remainder/requester use the authorized project address; an Anvil account receives artificial IMD via a local storage override and the IMD deployer is impersonated only in the disposable fork.",

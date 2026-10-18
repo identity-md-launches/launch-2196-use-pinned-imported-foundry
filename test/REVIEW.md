@@ -5,6 +5,10 @@ launch manifest, deployment artifacts, dependencies, and configuration are
 unchanged. No live deployment, paid oracle admission, or game operation is claimed.
 No new implementation defect was confirmed by this review.
 
+This revision reran every suite after the accepted worker day-cap change
+(`worker/day-cap.mjs`, admission and engine deferral) and added contract-level
+tests for the hook state that change reads.
+
 ## Reproduce offline
 
 The Solidity suite uses the existing pinned libraries and a small local cheatcode
@@ -46,6 +50,7 @@ and transaction adapter with a mock Intake.
 | `CabalFundingHookFailures.t.sol` | Atomic rollback on Intake revert, undercharge, overcharge, zero ID, approval failure and allowance-clear failure; retry after rollback; fee-on-transfer deposit/harvest rejection; zero/excess settlement; reentrancy into funding operations; unsynced donations; swaps and harvest during Intake/treasury failure. |
 | `CabalFundingHookArithmetic.t.sol` | 1,000-run full-uint256 fee bounds and round-trip rounding properties; zero/one/divisor/max edges; signed bounds; wrong-sign deltas; partial-fill rejection; real swaps at atomic-unit boundaries; ten one-wei harvests with interleaved treasury payouts; CABAL-only first buys in both orderings; actual unrelated-pool swaps and plain wallet transfers. |
 | `CabalFundingHookInvariant.t.sol` | Real PoolManager and LaunchToken; three funded actors; four swap modes; prefunding, unsynced donations, sync, dust/full harvest, fixed-treasury payout, owner configuration, day advancement, payments, replay, Intake failures, unauthorized calls and buy/sell round trips. |
+| `CabalFundingHookDayCap.t.sol` | The `dailyLimit`/`spentDay`/`spentToday` views the worker's admission reads: stale views after UTC midnight still allow a full new-day cap; a reverted payment on a new day leaves the old day recorded; lowering the cap below today's spend gives zero headroom without reset; caps that are not a price multiple round down; 63.5 IMD funds 127 decisions and 64 IMD exactly sixteen BO5s. A 512-run fuzz copies the worker's headroom formula and checks, for worker clocks from one hour behind to five minutes ahead of the chain, that it never promises a payment `payRequest` rejects, and is exact outside the skew window. |
 | `LaunchTokenInvariant.t.sol` | Four holders; transfers, self/zero/full-balance transfers, finite/infinite approvals, delegated transfers, revoked allowances, overdraw failures and crossing both sides of the PvP threshold. |
 
 The hook handler keeps separate cumulative ghosts for fees, redeemed claims,
@@ -83,13 +88,15 @@ Adding such a consumer or mutable protocol addresses would violate this assignme
   activity for the requested seed.
 - `review-results/local-e2e.json`: 1,000 IMD taxable input, 40 IMD custom fees,
   28 IMD request allocation, 12 IMD treasury payment; eight payments costing 4 IMD,
-  24 IMD left; delayed inclusion and lost-broadcast-reply recovery without duplicates.
-- `review-results/protocol-review.json`: public reads at Robinhood block **92125141**.
+  24 IMD left; delayed inclusion and lost-broadcast-reply recovery without duplicates;
+  worker day-cap headroom equal to the compiled hook's state and a capped request
+  deferred without any transaction.
+- `review-results/protocol-review.json`: public reads at Robinhood block **92141844**.
   Policy **30** is unchanged: 12500 pool fee, 2,500 IMD opening valuation, 1000 bps
   swarm. The request action still costs **0.5 IMD** and capabilities match. Runtime
   hashes for the factory, manager, IMD, Intake, fees, router, quoter and Permit2 match
   the pinned inputs.
-- `review-results/production-router-review.json`: local fork of block **92125324**,
+- `review-results/production-router-review.json`: local fork of block **92141917**,
   both currency orderings. Real LaunchFactory construction and initialization,
   8800/1000/200 allocation (including recorded liquidity dust), factory LP custody,
   bound pool, mask `0x20cc`, constructor inputs, runtime hashes, default-disabled
@@ -130,6 +137,13 @@ Robinhood ETH gas funding remain activation prerequisites. Tax volume is no fund
 guarantee. Immutable Intake/action retirement can strand request reserves; the
 explicit no-migration/no-sweep design is retained. The authorized factory remains
 trusted to choose the final token and tick spacing before permanent binding.
+
+The worker's day-cap arithmetic tolerates its clock running at most five minutes
+ahead of the chain. A worker clock further ahead across UTC midnight computes a
+full new-day headroom the contract does not yet allow; `payRequest` then rejects
+with `LimitExceeded` before any IMD moves, so the limit is liveness, not funds.
+Keep the host clock synchronized. The on-chain `dailyLimit` must be at least
+64 IMD for sixteen simultaneous BO5s; a larger request fund does not raise it.
 
 The platform fee is additional to custom tax and outside the 70/30 allocation;
 these tests do not support a flat all-in 5.25% quote or unlimited fill promise.

@@ -13,6 +13,8 @@
   "requestDeadlineSeconds": 1800,
   "lostBroadcastReplyRecoveredAfterRestart": true,
   "duplicateRequestsPaid": 0,
+  "dayCapDeferredWithoutTransaction": true,
+  "dayCapHeadroomMatchesContract": true,
   "liveChainTransactions": 0,
   "realFundsSpent": "0",
   "notes": [
